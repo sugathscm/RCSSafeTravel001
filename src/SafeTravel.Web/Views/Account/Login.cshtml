@@ -1,0 +1,22 @@
+@model SafeTravel.Web.Controllers.LoginForm
+@{ ViewData["Title"] = "Sign in"; }
+
+<main class="auth">
+    <form class="panel" method="post" action="/account/login" novalidate>
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl">
+        <div class="body vstack gap-3">
+            <a class="logo" href="/"><span class="mk">🛡️</span><span>Safe Travel Sri Lanka<small>Sign in</small></span></a>
+            @if (!string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-danger mb-0" role="alert">@Model.Error</div> }
+            @if (Model.NeedsCode && string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-info mb-0" role="status">Enter the six-digit code from your authenticator app.</div> }
+            <div class="field"><label class="form-label" for="l-email">Email</label><input class="form-control" id="l-email" name="Email" type="email" value="@Model.Email" required autocomplete="username" autofocus></div>
+            <div class="field"><label class="form-label" for="l-pass">Password</label><input class="form-control" id="l-pass" name="Password" type="password" value="@(Model.NeedsCode ? Model.Password : "")" required autocomplete="current-password"></div>
+            @if (Model.NeedsCode)
+            {
+                <div class="field"><label class="form-label" for="l-code">Authenticator code</label><input class="form-control num" id="l-code" name="Code" inputmode="numeric" maxlength="7" autocomplete="one-time-code"></div>
+            }
+            <button class="btn btn-danger" type="submit">Sign in</button>
+            <p class="small mute mb-0">Staff, suppliers and travellers use the same sign-in. New business? <a href="/register">Register here</a>.</p>
+        </div>
+    </form>
+</main>

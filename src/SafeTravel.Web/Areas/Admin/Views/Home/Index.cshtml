@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Admin Portal";
+    var roles = string.Join(",", Roles.Staff.Where(User.IsInRole));
+}
+<div class="adm" id="admin" data-roles="@roles" data-name="@(User.FindFirst("name")?.Value)">
+    <nav class="side" aria-label="Admin Portal">
+        <div class="who"><b>Admin Portal</b>Internal · @(User.FindFirst("name")?.Value)</div>
+        <div id="side-links" class="links"></div>
+        <span class="sp"></span>
+        <a class="link" href="/">🌐 View the Web Portal</a>
+        <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button type="submit" class="link">↩ Sign out</button></form>
+    </nav>
+    <div class="main" id="main" aria-live="polite"><p class="mute">Loading…</p></div>
+</div>
+@section scripts { <script src="~/js/admin.js" asp-append-version="true"></script> }

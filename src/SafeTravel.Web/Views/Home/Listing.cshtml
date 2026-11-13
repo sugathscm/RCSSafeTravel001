@@ -1,0 +1,89 @@
+@model ListingPage
+@{
+    Layout = "_Portal"; ViewData["Page"] = "find";
+    var l = Model.Listing; var promo = l.Promotion;
+    ViewData["Title"] = l.Name;
+    var tel = new string(l.Phone.Where(c => char.IsDigit(c) || c == '+').ToArray());
+    var hasMap = l.Latitude != 0 || l.Longitude != 0;
+    var inv = System.Globalization.CultureInfo.InvariantCulture;
+}
+@section styles { <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css"> }
+
+<section class="sec lpage" id="listing-page" data-id="@l.Id" data-lat="@l.Latitude.ToString(inv)" data-lng="@l.Longitude.ToString(inv)" data-icon="@l.Icon">
+    <div class="wrap">
+        <a class="back" href="/find?kind=@l.Kind">← All @(l.Kind == "help" ? "help points" : "businesses")</a>
+        <div class="split lhead">
+            <div class="vstack gap-3">
+                <div class="hrow">
+                    <span class="pill">@l.Icon @l.Category</span>
+                    @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
+                    @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0") · @l.Reviews reviews</span> }
+                </div>
+                <h1 class="h2x mt-0">@l.Name</h1>
+                @if (promo is not null)
+                {
+                    <div class="promo-box">
+                        <span class="promo-badge static">Promotion</span>
+                        <b>@promo.Title</b>
+                        @if (promo.Text.Length > 0) { <span>@promo.Text</span> }
+                        @if (promo.Until is DateOnly until) { <span class="small">Until @until.ToString("d MMM yyyy")</span> }
+                    </div>
+                }
+                @if (l.Description.Length > 0) { <p class="lead mt-0">@l.Description</p> }
+                <dl class="kv">
+                    <dt>Town</dt><dd>@l.Town, @l.District</dd>
+                    @if (l.Phone.Length > 0) { <dt>Phone</dt><dd class="num">@l.Phone</dd> }
+                    @if (l.Hours.Length > 0) { <dt>Hours</dt><dd>@l.Hours</dd> }
+                </dl>
+                <div class="hrow">
+                    @if (tel.Length > 0) { <a class="btn btn-danger" href="tel:@tel" data-track="call" data-id="@l.Id">Call</a> }
+                    @if (hasMap) { <a class="btn btn-dark" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=@l.Latitude.ToString(inv),@l.Longitude.ToString(inv)" data-track="directions" data-id="@l.Id">Directions</a> }
+                </div>
+            </div>
+            @if (hasMap) { <div class="map map-s" id="listing-map" role="application" aria-label="Map showing @l.Name"></div> }
+        </div>
+
+        @if (Model.Products.Count > 0)
+        {
+            <h2 class="lsub">Products and prices <span class="mute">(@Model.Products.Count)</span></h2>
+            <div class="pgrid">
+                @foreach (var p in Model.Products)
+                {
+                    <article class="pcard">
+                        @if (p.ImageUrl is not null) { <img src="@p.ImageUrl" alt="" loading="lazy"> } else { <span class="ph" aria-hidden="true">@l.Icon</span> }
+                        <div class="pcard-body">
+                            <h3>@p.Name</h3>
+                            @if (p.Description.Length > 0) { <p class="small mute">@p.Description</p> }
+                            <div class="pprice num">
+                                @if (p.Price is decimal price) { <b>LKR @price.ToString("N0")</b> @if (p.Unit.Length > 0) { <span class="small mute">@p.Unit</span> } }
+                                else { <span class="small mute">Ask for price</span> }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+
+        @if (Model.More.Count > 0)
+        {
+            <h2 class="lsub">More from this business</h2>
+            <div class="cards">
+                @foreach (var m in Model.More)
+                {
+                    <a class="lcard @(m.Promotion is null ? "" : "has-promo")" href="/listing/@m.Id">
+                        @if (m.Promotion is not null) { <span class="promo-badge">Promotion</span> }
+                        <span class="ic">@m.Icon</span>
+                        <h3>@m.Name</h3>
+                        <span class="meta">@m.Category · @m.Town</span>
+                        @if (m.Promotion is not null) { <span class="promo-line">@m.Promotion.Title</span> }
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section scripts {
+    <script src="~/lib/leaflet/dist/leaflet.js"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+}

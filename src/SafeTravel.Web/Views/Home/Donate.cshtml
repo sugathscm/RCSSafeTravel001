@@ -1,0 +1,28 @@
+@model PortalHome
+@{ Layout = "_Portal"; ViewData["Page"] = "donate"; ViewData["Title"] = "Donate"; }
+
+<section class="sec">
+    <div class="wrap split">
+        <div>
+            <span class="eyebrow">Donate</span>
+            <h1 class="h2x">Help reach people faster</h1>
+            <p class="lead">Your donation is paid through the payment gateway and supports flood relief and first aid training. You get a receipt by email.</p>
+        </div>
+        <form class="panel mt-0" id="donate-form" novalidate>
+            <div class="body vstack gap-3">
+                <div class="amounts" role="group" aria-label="Amount">
+                    <button type="button" class="chip" data-amount="1000">LKR 1,000</button>
+                    <button type="button" class="chip on" data-amount="2500">LKR 2,500</button>
+                    <button type="button" class="chip" data-amount="5000">LKR 5,000</button>
+                    <button type="button" class="chip" data-amount="10000">LKR 10,000</button>
+                </div>
+                <div class="field"><label class="form-label" for="d-amount">Amount (LKR)</label><input class="form-control num" id="d-amount" name="amount" type="number" min="100" step="100" value="2500" required></div>
+                <div class="field"><label class="form-label" for="d-name">Name (optional)</label><input class="form-control" id="d-name" name="name" maxlength="160" autocomplete="name"></div>
+                <div class="field"><label class="form-label" for="d-email">Email for the receipt (optional)</label><input class="form-control" id="d-email" name="email" type="email" maxlength="200" placeholder="you@example.com" autocomplete="email"></div>
+                <button class="btn btn-danger" type="submit">Donate</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

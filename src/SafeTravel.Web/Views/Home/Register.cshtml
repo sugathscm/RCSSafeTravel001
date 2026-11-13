@@ -1,0 +1,43 @@
+@model PortalHome
+@{ Layout = "_Portal"; ViewData["Page"] = "register"; ViewData["Title"] = "List your business"; }
+
+<section class="sec">
+    <div class="wrap narrow">
+        <span class="eyebrow">Admin Portal (Supplier)</span>
+        <h1 class="h2x">Register your business</h1>
+        <p class="lead">Tell us about your business. The admin team checks your documents, then you pay LKR @Model.Content.AnnualFee.ToString("N0") a year and go live on the map and in the app.</p>
+        <form class="panel" id="register-form" novalidate>
+            <div class="body">
+                <div class="grid2">
+                    <div class="field"><label class="form-label" for="r-biz">Business name</label><input class="form-control" id="r-biz" name="businessName" required maxlength="160"></div>
+                    <div class="field"><label class="form-label" for="r-cat">Category</label>
+                        <select class="form-select" id="r-cat" name="categoryId">
+                            @foreach (var cat in Model.Categories.Where(x => x.Kind == "business"))
+                            {
+                                <option value="@cat.Id">@cat.Icon @cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="field"><label class="form-label" for="r-town">Town</label><input class="form-control" id="r-town" name="town" required maxlength="80"></div>
+                    <div class="field"><label class="form-label" for="r-district">District</label>
+                        <select class="form-select" id="r-district" name="district">
+                            @foreach (var d in Geo.Districts.Keys.OrderBy(x => x))
+                            {
+                                <option>@d</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="field"><label class="form-label" for="r-contact">Your name</label><input class="form-control" id="r-contact" name="contactName" required maxlength="120" autocomplete="name"></div>
+                    <div class="field"><label class="form-label" for="r-phone">Mobile number</label><input class="form-control" id="r-phone" name="phone" required maxlength="30" inputmode="tel" autocomplete="tel"></div>
+                    <div class="field"><label class="form-label" for="r-email">Email (you sign in with this)</label><input class="form-control" id="r-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+                    <div class="field"><label class="form-label" for="r-pass">Password (10 characters or more, with a capital letter and a number)</label><input class="form-control" id="r-pass" name="password" type="password" required minlength="10" maxlength="100" autocomplete="new-password"></div>
+                </div>
+                <div class="field mt-3"><label class="form-label" for="r-hours">Opening hours</label><input class="form-control" id="r-hours" name="hours" maxlength="160" placeholder="Daily 9:00 to 18:00"></div>
+                <div class="field mt-3"><label class="form-label" for="r-desc">Short description</label><textarea class="form-control" id="r-desc" name="description" rows="2" maxlength="1000"></textarea></div>
+                <div class="hrow mt-3"><button class="btn btn-danger" type="submit">Send registration</button><a class="btn btn-plain" href="/">Cancel</a><span class="small mute">Already registered? <a href="/account/login">Sign in</a></span></div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

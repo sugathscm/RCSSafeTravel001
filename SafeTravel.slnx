@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SafeTravel.Core/SafeTravel.Core.csproj" />
+    <Project Path="src/SafeTravel.Web/SafeTravel.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SafeTravel.Tests/SafeTravel.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,27 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Csrf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="@Csrf.GetAndStoreTokens(Context).RequestToken">
+    <title>@(ViewData["Title"] is string t ? t + " · " : "")Safe Travel Sri Lanka</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/fonts/fonts.css">
+    @await RenderSectionAsync("styles", required: false)
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body class="@ViewData["BodyClass"]">
+    @RenderBody()
+
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" id="toasts"></div>
+    <div class="modal fade" id="app-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content"><div class="modal-body" id="app-modal-body"></div></div></div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/app.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>

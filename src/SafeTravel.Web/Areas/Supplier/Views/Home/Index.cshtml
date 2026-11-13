@@ -1,0 +1,12 @@
+@{ ViewData["Title"] = "Supplier Portal"; }
+<div class="adm" id="supplier">
+    <nav class="side" aria-label="Supplier Portal">
+        <div class="who"><b>Supplier Portal</b>@(User.FindFirst("name")?.Value)</div>
+        <div id="side-links" class="links"></div>
+        <span class="sp"></span>
+        <a class="link" href="/">🌐 View the Web Portal</a>
+        <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button type="submit" class="link">↩ Sign out</button></form>
+    </nav>
+    <div class="main" id="main" aria-live="polite"><p class="mute">Loading…</p></div>
+</div>
+@section scripts { <script src="~/js/supplier.js" asp-append-version="true"></script> }

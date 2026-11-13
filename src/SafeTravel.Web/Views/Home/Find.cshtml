@@ -1,0 +1,30 @@
+@model PortalHome
+@{ Layout = "_Portal"; ViewData["Page"] = "find"; ViewData["Title"] = "Find help and places"; }
+
+<section class="sec">
+    <div class="wrap">
+        <span class="eyebrow">Directory</span>
+        <h1 class="h2x">Find help and trusted places</h1>
+        <div class="filters" id="find" data-page="find">
+            <button type="button" class="chip" data-kind="">All</button>
+            <button type="button" class="chip" data-kind="help">Help points</button>
+            <button type="button" class="chip" data-kind="business">Businesses</button>
+            <button type="button" class="chip" id="f-promo">🏷️ Promotions</button>
+            <select class="form-select w-auto" id="f-cat" aria-label="Category">
+                <option value="">All categories</option>
+                @foreach (var cat in Model.Categories)
+                {
+                    <option value="@cat.Slug" data-kind="@cat.Kind">@cat.Icon @cat.Name</option>
+                }
+            </select>
+            <select class="form-select w-auto" id="f-district" aria-label="District"><option value="">All districts</option></select>
+            <input class="form-control" id="f-q" type="search" placeholder="Search by name or town" maxlength="80" aria-label="Search">
+            <button type="button" class="btn btn-plain" id="f-near">📍 Near me</button>
+        </div>
+        <p class="small mute mt-3" id="f-count" aria-live="polite"></p>
+        <div class="cards" id="f-results"></div>
+        <div class="hrow mt-3"><button type="button" class="btn btn-plain d-none" id="f-more">Show more</button></div>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

@@ -1,0 +1,32 @@
+# Build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+_publish/
+publish/
+*.zip
+
+# IDE / tooling
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.pubxml.user
+node_modules/
+.expo/
+
+# Runtime data
+App_Data/
+*.db
+*.db-shm
+*.db-wal
+
+# Secrets: real config stays on this PC only.
+# Copy appsettings.Example.json to appsettings.json and fill in values.
+src/SafeTravel.Web/appsettings.json
+appsettings.Production.json
+appsettings.*.local.json
+secrets.json
+.env

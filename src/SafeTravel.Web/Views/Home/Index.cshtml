@@ -1,0 +1,164 @@
+@model PortalHome
+@{
+    Layout = "_Portal"; ViewData["Page"] = "home";
+    var c = Model.Content;
+    bool On(string s) => !c.Sections.TryGetValue(s, out var v) || v;
+    string Dot(string level) => level == "red" ? "" : level;
+}
+@section styles { <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css"> }
+
+<section class="hero">
+    <div class="wrap">
+        <div>
+            <span class="hbadge">🛡️ Travel-safety service for Sri Lanka</span>
+            <h1>@c.HeroTitle</h1>
+            <p>@c.HeroText</p>
+            <div class="hrow mt-4">
+                <a class="btn btn-danger" href="/find?kind=help">Find help near you</a>
+                <a class="btn btn-dark" href="/find?kind=business">Trusted businesses →</a>
+            </div>
+        </div>
+        @if (On("alerts") && Model.Alerts.Count > 0)
+        {
+            <div class="live" id="live-alerts">
+                <h4><span class="dot"></span> Live right now</h4>
+                @foreach (var a in Model.Alerts.Take(3))
+                {
+                    <div class="al">
+                        <span class="dot @Dot(a.Level) mt-1"></span>
+                        <div><div class="k">@a.Type · @a.Area · <time datetime="@a.PublishedUtc.ToString("o")" data-ago></time></div><b>@a.Title</b></div>
+                    </div>
+                }
+            </div>
+        }
+        else { <span></span> }
+    </div>
+</section>
+<div class="srcs"><div class="wrap"><span class="eyebrow mute">Alerts &amp; data from</span><span>Disaster Management Centre</span><span>NBRO</span><span>Dept. of Meteorology</span><span>Ministry of Health</span></div></div>
+
+@if (On("ads") && Model.Ads.Count > 0)
+{
+    <section class="sec adsec" aria-label="Sponsor advertisements">
+        <div class="wrap">
+            <span class="eyebrow mute">Sponsored</span>
+            <div class="ads">
+                @foreach (var ad in Model.Ads)
+                {
+                    <a class="ad ad-@ad.Slot" href="@ad.LinkUrl" target="_blank" rel="sponsored noopener" data-ad="@ad.Id">
+                        @if (ad.ImageUrl is not null) { <img src="@ad.ImageUrl" alt="" loading="lazy"> }
+                        <span class="ad-body">
+                            <span class="ad-by">@ad.Sponsor</span>
+                            <b>@ad.Headline</b>
+                            @if (ad.Text.Length > 0) { <span class="small">@ad.Text</span> }
+                            <span class="ad-go">@ad.LinkLabel →</span>
+                        </span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@if (On("map"))
+{
+    <section class="sec">
+        <div class="wrap split">
+            <div>
+                <span class="eyebrow">Find help</span>
+                <h2>Banks, SOS points and police stations on one map</h2>
+                <p class="lead">Every help point is kept up to date by the admin team. Choose a category to see the list, or tap a pin.</p>
+                <div class="hrow mt-3">
+                    @foreach (var cat in Model.Categories.Where(x => x.Kind == "help"))
+                    {
+                        <a class="chip" href="/find?kind=help&category=@cat.Slug">@cat.Icon @cat.Name</a>
+                    }
+                </div>
+            </div>
+            <div class="map" id="help-map" role="application" aria-label="Map of help points"></div>
+        </div>
+    </section>
+}
+
+@if (On("businesses") && Model.Businesses.Count > 0)
+{
+    <section class="sec soft">
+        <div class="wrap">
+            <span class="eyebrow">Verified businesses</span>
+            <h2>Places travellers can trust</h2>
+            <p class="lead">Every business here is registered, checked by the admin team and renewed each year.</p>
+            <div class="cards">
+                @foreach (var l in Model.Businesses)
+                {
+                    <a class="lcard @(l.Promotion is null ? "" : "has-promo")" href="/listing/@l.Id">
+                        @if (l.Promotion is not null) { <span class="promo-badge">Promotion</span> }
+                        <span class="ic">@l.Icon</span>
+                        <h3>@l.Name</h3>
+                        <span class="meta">@l.Category · @l.Town</span>
+                        @if (l.Promotion is not null) { <span class="promo-line">@l.Promotion.Title</span> }
+                        <span class="hrow">
+                            @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
+                            @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0")</span> }
+                        </span>
+                    </a>
+                }
+            </div>
+            <div class="hrow mt-3"><a class="btn btn-dark" href="/find?kind=business">See all businesses →</a></div>
+        </div>
+    </section>
+}
+
+@if (On("topics") && c.Topics.Count > 0)
+{
+    <section class="sec">
+        <div class="wrap">
+            <span class="eyebrow">Safety topics</span>
+            <h2>Know before you go</h2>
+            <div class="cards">
+                @foreach (var t in c.Topics)
+                {
+                    <div class="tcard tone-@t.Tone"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p></div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="sec pt-0">
+    <div class="wrap duo">
+        <div class="big tone-blue">
+            <span class="emoji">🏨</span>
+            <h3>Own a business?</h3>
+            <p>Register, upload your documents and pay LKR @c.AnnualFee.ToString("N0") a year to appear on the map and in the app.</p>
+            <a class="btn btn-dark" href="/register">List your business →</a>
+        </div>
+        @if (On("donate"))
+        {
+            <div class="big tone-rose">
+                <span class="emoji">❤️</span>
+                <h3>Support disaster response</h3>
+                <p>Donations support flood relief and first aid training across Sri Lanka.</p>
+                <a class="btn btn-danger" href="/donate">Donate →</a>
+            </div>
+        }
+    </div>
+</section>
+
+@if (On("sponsors") && c.Sponsors.Count > 0)
+{
+    <section class="sec pt-0">
+        <div class="wrap">
+            <span class="eyebrow mute">Sponsors</span>
+            <div class="spons">
+                @foreach (var s in c.Sponsors)
+                {
+                    <div class="spon"><b>@s.Name</b><span class="small mute">@s.Role</span></div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@section scripts {
+    <script src="~/lib/leaflet/dist/leaflet.js"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+}
