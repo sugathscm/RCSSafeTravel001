@@ -1,7 +1,7 @@
 @{ ViewData["Title"] = "Supplier Portal"; }
 <div class="adm" id="supplier">
     <nav class="side" aria-label="Supplier Portal">
-        <div class="who"><b>Supplier Portal</b>@(User.FindFirst("name")?.Value)</div>
+        <div class="who"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span><b>Supplier Portal</b>@(User.FindFirst("name")?.Value)</span></div>
         <div id="side-links" class="links"></div>
         <span class="sp"></span>
         <a class="link" href="/">🌐 View the Web Portal</a>

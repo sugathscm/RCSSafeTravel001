@@ -11,7 +11,7 @@
 
 <section class="sec lpage" id="listing-page" data-id="@l.Id" data-lat="@l.Latitude.ToString(inv)" data-lng="@l.Longitude.ToString(inv)" data-icon="@l.Icon">
     <div class="wrap">
-        <a class="back" href="/find?kind=@l.Kind">← All @(l.Kind == "help" ? "help points" : "businesses")</a>
+        <a class="back" href="/find?kind=@l.Kind">‹ All @(l.Kind == "help" ? "help points" : "businesses")</a>
         <div class="split lhead">
             <div class="vstack gap-3">
                 <div class="hrow">
@@ -36,8 +36,8 @@
                     @if (l.Hours.Length > 0) { <dt>Hours</dt><dd>@l.Hours</dd> }
                 </dl>
                 <div class="hrow">
-                    @if (tel.Length > 0) { <a class="btn btn-danger" href="tel:@tel" data-track="call" data-id="@l.Id">Call</a> }
-                    @if (hasMap) { <a class="btn btn-dark" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=@l.Latitude.ToString(inv),@l.Longitude.ToString(inv)" data-track="directions" data-id="@l.Id">Directions</a> }
+                    @if (tel.Length > 0) { <a class="btn btn-dark" href="tel:@tel" data-track="call" data-id="@l.Id">📞 Call</a> }
+                    @if (hasMap) { <a class="btn btn-plain" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=@l.Latitude.ToString(inv),@l.Longitude.ToString(inv)" data-track="directions" data-id="@l.Id">🧭 Directions</a> }
                 </div>
             </div>
             @if (hasMap) { <div class="map map-s" id="listing-map" role="application" aria-label="Map showing @l.Name"></div> }

@@ -110,4 +110,11 @@
   };
 
   $('time[data-ago]').each(function () { $(this).text(ST.ago(this.getAttribute('datetime'))); });
+
+  // The Red Cross logo is one file, wwwroot/img/slrcs-logo.png. If it is missing, show the neutral mark, not a broken picture.
+  $('img[data-logo]').each(function () {
+    var img = this;
+    function missing() { $(img).parent().addClass('no-logo'); }
+    if (img.complete) { if (!img.naturalWidth) missing(); } else $(img).one('error', missing);
+  });
 })(jQuery);

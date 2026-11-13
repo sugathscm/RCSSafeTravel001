@@ -9,29 +9,29 @@
 
 <section class="hero">
     <div class="wrap">
-        <div>
-            <span class="hbadge">🛡️ Travel-safety service for Sri Lanka</span>
+        <div class="hmain">
+            <span class="hbadge"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span>Official travel-safety service of the Red Cross</span></span>
             <h1>@c.HeroTitle</h1>
             <p>@c.HeroText</p>
-            <div class="hrow mt-4">
-                <a class="btn btn-danger" href="/find?kind=help">Find help near you</a>
-                <a class="btn btn-dark" href="/find?kind=business">Trusted businesses →</a>
+            <div class="hrow">
+                <a class="btn btn-danger btn-xl btn-glow" href="/find?kind=help">Find help near you</a>
+                <a class="btn btn-glass btn-xl" href="/find?kind=business">Trusted businesses →</a>
             </div>
         </div>
         @if (On("alerts") && Model.Alerts.Count > 0)
         {
             <div class="live" id="live-alerts">
-                <h4><span class="dot"></span> Live right now</h4>
+                <h4><span><span class="dot"></span> Live right now</span><span class="upd">Updated <time datetime="@(Model.Alerts.Max(a => a.PublishedUtc).ToString("o"))" data-ago></time></span></h4>
                 @foreach (var a in Model.Alerts.Take(3))
                 {
                     <div class="al">
-                        <span class="dot @Dot(a.Level) mt-1"></span>
-                        <div><div class="k">@a.Type · @a.Area · <time datetime="@a.PublishedUtc.ToString("o")" data-ago></time></div><b>@a.Title</b></div>
+                        <span class="dot @Dot(a.Level)"></span>
+                        <div class="txt"><span class="k">@a.Type · @a.Area</span><b>@a.Title</b></div>
+                        <time datetime="@a.PublishedUtc.ToString("o")" data-ago></time>
                     </div>
                 }
             </div>
         }
-        else { <span></span> }
     </div>
 </section>
 <div class="srcs"><div class="wrap"><span class="eyebrow mute">Alerts &amp; data from</span><span>Disaster Management Centre</span><span>NBRO</span><span>Dept. of Meteorology</span><span>Ministry of Health</span></div></div>
@@ -61,48 +61,21 @@
 
 @if (On("map"))
 {
-    <section class="sec">
+    <section class="sec first">
         <div class="wrap split">
             <div>
                 <span class="eyebrow">Find help</span>
                 <h2>Banks, SOS points and police stations on one map</h2>
                 <p class="lead">Every help point is kept up to date by the admin team. Choose a category to see the list, or tap a pin.</p>
-                <div class="hrow mt-3">
+                <div class="chips">
                     @foreach (var cat in Model.Categories.Where(x => x.Kind == "help"))
                     {
-                        <a class="chip" href="/find?kind=help&category=@cat.Slug">@cat.Icon @cat.Name</a>
+                        <a class="chip" href="/find?kind=help&category=@cat.Slug"><span>@cat.Icon</span>@cat.Name</a>
                     }
                 </div>
+                <a class="btn btn-dark btn-lg mt-4" href="/find?kind=help">Open the full list →</a>
             </div>
             <div class="map" id="help-map" role="application" aria-label="Map of help points"></div>
-        </div>
-    </section>
-}
-
-@if (On("businesses") && Model.Businesses.Count > 0)
-{
-    <section class="sec soft">
-        <div class="wrap">
-            <span class="eyebrow">Verified businesses</span>
-            <h2>Places travellers can trust</h2>
-            <p class="lead">Every business here is registered, checked by the admin team and renewed each year.</p>
-            <div class="cards">
-                @foreach (var l in Model.Businesses)
-                {
-                    <a class="lcard @(l.Promotion is null ? "" : "has-promo")" href="/listing/@l.Id">
-                        @if (l.Promotion is not null) { <span class="promo-badge">Promotion</span> }
-                        <span class="ic">@l.Icon</span>
-                        <h3>@l.Name</h3>
-                        <span class="meta">@l.Category · @l.Town</span>
-                        @if (l.Promotion is not null) { <span class="promo-line">@l.Promotion.Title</span> }
-                        <span class="hrow">
-                            @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
-                            @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0")</span> }
-                        </span>
-                    </a>
-                }
-            </div>
-            <div class="hrow mt-3"><a class="btn btn-dark" href="/find?kind=business">See all businesses →</a></div>
         </div>
     </section>
 }
@@ -111,9 +84,13 @@
 {
     <section class="sec">
         <div class="wrap">
-            <span class="eyebrow">Safety topics</span>
-            <h2>Know before you go</h2>
-            <div class="cards">
+            <div class="sec-head">
+                <div>
+                    <span class="eyebrow">Safety topics</span>
+                    <h2>Know before you go</h2>
+                </div>
+            </div>
+            <div class="cards mt-0">
                 @foreach (var t in c.Topics)
                 {
                     <div class="tcard tone-@t.Tone"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p></div>
@@ -123,22 +100,59 @@
     </section>
 }
 
-<section class="sec pt-0">
+@if (On("businesses") && Model.Businesses.Count > 0)
+{
+    <section class="sec">
+        <div class="wrap">
+            <div class="band">
+                <div class="intro">
+                    <span class="eyebrow">Verified businesses</span>
+                    <h2>Places travellers can trust</h2>
+                    <p class="lead">Every business here is registered, checked by the admin team and renewed each year.</p>
+                    <div class="hrow">
+                        <a class="btn btn-danger btn-lg" href="/find?kind=business">See all businesses →</a>
+                        <a class="btn btn-line btn-lg" href="/register">List your business</a>
+                    </div>
+                </div>
+                <div class="places">
+                    @foreach (var l in Model.Businesses)
+                    {
+                        <a class="place" href="/listing/@l.Id">
+                            <span class="ic">@l.Icon</span>
+                            <div class="txt">
+                                <h3>@l.Name</h3>
+                                <span class="meta">@l.Category · @l.Town</span>
+                                <span class="tags">
+                                    @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
+                                    @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0")</span> }
+                                    @if (l.Promotion is not null) { <span class="promo-badge">Promotion</span> }
+                                </span>
+                                @if (l.Promotion is not null) { <span class="promo-line">@l.Promotion.Title</span> }
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<section class="sec">
     <div class="wrap duo">
-        <div class="big tone-blue">
-            <span class="emoji">🏨</span>
+        <a class="big tone-green" href="/register">
+            <span class="emoji">🏪</span>
             <h3>Own a business?</h3>
             <p>Register, upload your documents and pay LKR @c.AnnualFee.ToString("N0") a year to appear on the map and in the app.</p>
-            <a class="btn btn-dark" href="/register">List your business →</a>
-        </div>
+            <span class="go">List your business →</span>
+        </a>
         @if (On("donate"))
         {
-            <div class="big tone-rose">
+            <a class="big tone-rose" href="/donate">
                 <span class="emoji">❤️</span>
                 <h3>Support disaster response</h3>
                 <p>Donations support flood relief and first aid training across Sri Lanka.</p>
-                <a class="btn btn-danger" href="/donate">Donate →</a>
-            </div>
+                <span class="go">Donate →</span>
+            </a>
         }
     </div>
 </section>

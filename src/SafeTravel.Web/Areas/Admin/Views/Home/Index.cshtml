@@ -4,7 +4,7 @@
 }
 <div class="adm" id="admin" data-roles="@roles" data-name="@(User.FindFirst("name")?.Value)">
     <nav class="side" aria-label="Admin Portal">
-        <div class="who"><b>Admin Portal</b>Internal · @(User.FindFirst("name")?.Value)</div>
+        <div class="who"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span><b>Admin Portal</b>Internal · @(User.FindFirst("name")?.Value)</span></div>
         <div id="side-links" class="links"></div>
         <span class="sp"></span>
         <a class="link" href="/">🌐 View the Web Portal</a>

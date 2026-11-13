@@ -80,7 +80,7 @@
         total = r.total;
         $('#f-count').text(r.total + (r.total === 1 ? ' place found' : ' places found') + (f.lat != null ? ' within 50 km of you' : ''));
         var html = r.items.map(card).join('');
-        if (more) $('#f-results').append(html); else $('#f-results').html(html || '<p>Nothing matches. Clear a filter to see more places.</p>');
+        if (more) $('#f-results').append(html); else $('#f-results').html(html || '<div class="empty">Nothing matches. Clear a filter to see more places.</div>');
         $('#f-more').toggleClass('d-none', f.page * 24 >= total);
       });
     }
