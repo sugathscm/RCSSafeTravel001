@@ -161,6 +161,20 @@
     });
   };
 
+  // ----- reviews: travellers rate businesses, staff check each review before it is shown -----
+  screens.reviews = function () {
+    return ST.api('GET', 'admin/reviews').then(function (list) {
+      var m = { pending: ['warn', 'Waiting'], approved: ['ok', 'Shown'], rejected: ['bad', 'Rejected'] };
+      return head('Reviews', 'Travellers rate the businesses they visit. A review is shown on the listing page, and counts in its rating, only after you approve it.') +
+        panel('All reviews', table(['Place', 'Traveller', 'Rating', 'Review', 'Sent', 'Status', ''], list.map(function (r) {
+          var x = m[r.status] || ['', r.status];
+          return '<tr><td><b>' + e(r.listingName) + '</b></td><td>' + e(r.authorName) + '</td><td class="text-nowrap">' + '★★★★★'.slice(0, r.stars) + '</td><td class="small" style="max-width:340px">' + e(r.text) + '</td>' +
+            '<td class="small text-nowrap">' + ST.ago(r.createdUtc) + '</td><td><span class="pill ' + x[0] + '">' + x[1] + '</span></td>' +
+            acts(can.content ? (r.status === 'pending' ? btn('reviewOk', r.id, 'Approve', 'btn-dark') + btn('reviewNo', r.id, 'Reject') : btn('reviewDel', r.id, 'Delete')) : '') + '</tr>';
+        })), '<span class="small mute">' + list.filter(function (r) { return r.status === 'pending'; }).length + ' waiting</span>');
+    });
+  };
+
   // ----- map zones: areas staff mark on the safety map -----
   var ZONE_TYPES = { flood: '🌊 Flood zone', landslide: '⛰️ Landslide zone', roadclosure: '🚧 Road closure', beachflag: '🚩 Beach flag', wildlife: '🐘 Wildlife', other: '⚠️ Other risk' };
   screens.zones = function () {
@@ -286,7 +300,7 @@
   };
 
   // ----- menu and routing: the page is kept in the address after #, so reload and back work -----
-  var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['categories', '🗂️', 'Categories', true],
+  var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['reviews', '⭐', 'Reviews', true], ['categories', '🗂️', 'Categories', true],
     ['content', '🖥️', 'Web Portal content', can.content], ['firstaid', '🩹', 'First aid guides', true], ['alerts', '🔔', 'Alerts', true], ['zones', '🗺️', 'Map zones', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
     ['users', '👥', 'Users and roles', can.admin], ['system', '🔐', 'Security and API', true], ['audit', '🧾', 'Audit log', can.admin]].filter(function (p) { return p[3]; });
   var current = 'dash', pending = 0;
@@ -342,6 +356,9 @@
           '<div class="hrow"><span class="sp"></span><button type="button" class="btn btn-plain" data-close>Cancel</button><button class="btn btn-danger" type="submit">Save</button></div></form>');
       });
     },
+    reviewOk: function (id) { ST.api('POST', 'admin/reviews/' + id + '/approve').done(function () { done('Approved. The review is on the listing page now.'); }); },
+    reviewNo: function (id) { ST.api('POST', 'admin/reviews/' + id + '/reject').done(function () { done('Rejected. The review is not shown.'); }); },
+    reviewDel: function (id) { ST.api('DELETE', 'admin/reviews/' + id).done(function () { done('Review deleted'); }); },
     zoneEdit: function (id) { ui.edit = id; show().done(function () { window.scrollTo(0, 0); $('#az-name').trigger('focus'); }); },
     zoneDel: function (id) { ST.api('DELETE', 'admin/risk-zones/' + id).done(function () { if (ui.edit === id) ui.edit = null; done('Zone removed from the map'); }); },
     guideEdit: function (id) { ui.edit = id; show().done(function () { window.scrollTo(0, 0); $('#fg-title').trigger('focus'); }); },

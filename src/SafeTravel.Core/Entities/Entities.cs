@@ -317,3 +317,45 @@ public class ReminderLog
     [MaxLength(40)] public string Channel { get; set; } = "";
     public DateTime SentUtc { get; set; } = DateTime.UtcNow;
 }
+
+/// <summary>Someone a traveller wants told in an emergency: family or a friend.</summary>
+public class TravellerContact
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public AppUser? User { get; set; }
+    [MaxLength(120)] public string Name { get; set; } = "";
+    [MaxLength(30)] public string Phone { get; set; } = "";
+    [MaxLength(60)] public string Relationship { get; set; } = "";
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+}
+
+/// <summary>One stop on a traveller's trip plan.</summary>
+public class TripStop
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public AppUser? User { get; set; }
+    [MaxLength(120)] public string Place { get; set; } = "";
+    public DateOnly? Date { get; set; }
+    [MaxLength(200)] public string Note { get; set; } = "";
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+}
+
+public enum ReviewStatus { Pending = 0, Approved = 1, Rejected = 2 }
+
+/// <summary>A traveller's rating of a business. Staff check it before it is shown; one review per traveller per listing.</summary>
+public class Review
+{
+    public int Id { get; set; }
+    public int ListingId { get; set; }
+    public Listing? Listing { get; set; }
+    public int UserId { get; set; }
+    /// <summary>The name shown with the review: first name and the initial of the last name.</summary>
+    [MaxLength(120)] public string AuthorName { get; set; } = "";
+    public int Stars { get; set; }
+    [MaxLength(1000)] public string Text { get; set; } = "";
+    public ReviewStatus Status { get; set; }
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTime? DecidedUtc { get; set; }
+}

@@ -64,6 +64,47 @@
             </div>
         }
 
+        @if (l.Kind == "business")
+        {
+            <h2 class="lsub" id="reviews">Reviews <span class="mute">(@Model.Reviews.Count)</span></h2>
+            <div class="rgrid">
+                <div class="rlist">
+                    @foreach (var r in Model.Reviews)
+                    {
+                        <article class="rcard">
+                            <div class="top"><b>@r.AuthorName</b><span class="stars" aria-label="@r.Stars out of 5 stars">@(new string('★', r.Stars))<span class="off">@(new string('★', 5 - r.Stars))</span></span></div>
+                            @if (r.Text.Length > 0) { <p>@r.Text</p> }
+                            <span class="small mute">@r.CreatedUtc.ToString("d MMM yyyy")</span>
+                        </article>
+                    }
+                    @if (Model.Reviews.Count == 0) { <div class="empty">No reviews yet. Be the first to rate this place.</div> }
+                </div>
+                @if (User.IsInRole(Roles.Traveller))
+                {
+                    <form class="white-card rform" id="review-form" data-listing="@l.Id" novalidate>
+                        <h2>Write a review</h2>
+                        <div class="field"><label class="form-label" for="rv-stars">Your rating</label>
+                            <select class="form-select" id="rv-stars" name="stars">
+                                <option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Fair</option><option value="2">★★ Poor</option><option value="1">★ Bad</option>
+                            </select>
+                        </div>
+                        <div class="field"><label class="form-label" for="rv-text">What should other travellers know? (optional)</label><textarea class="form-control" id="rv-text" name="text" rows="3" maxlength="1000"></textarea></div>
+                        <button class="btn btn-dark" type="submit">Send review</button>
+                        <span class="small mute">Reviews are checked by the team before they appear.</span>
+                    </form>
+                }
+                else
+                {
+                    <div class="white-card rform">
+                        <h2>Write a review</h2>
+                        <p>Sign in with a free traveller account to rate this place. Reviews are checked by the team before they appear.</p>
+                        <a class="btn btn-dark" href="/account/login?returnUrl=%2Flisting%2F@(l.Id)">Sign in</a>
+                        <a class="btn btn-plain" href="/join">Create a free account</a>
+                    </div>
+                }
+            </div>
+        }
+
         @if (Model.More.Count > 0)
         {
             <h2 class="lsub">More from this business</h2>

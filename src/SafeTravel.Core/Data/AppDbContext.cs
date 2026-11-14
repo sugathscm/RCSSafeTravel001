@@ -21,6 +21,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Topic> Topics => Set<Topic>();
     public DbSet<FirstAidGuide> FirstAidGuides => Set<FirstAidGuide>();
     public DbSet<RiskZone> RiskZones => Set<RiskZone>();
+    public DbSet<TravellerContact> TravellerContacts => Set<TravellerContact>();
+    public DbSet<TripStop> TripStops => Set<TripStop>();
+    public DbSet<Review> Reviews => Set<Review>();
     public DbSet<SiteSetting> SiteSettings => Set<SiteSetting>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
@@ -72,6 +75,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         b.Entity<Alert>().HasIndex(x => new { x.IsActive, x.PublishedUtc });
         b.Entity<RiskZone>().HasIndex(x => x.IsActive);
+
+        // A traveller's own data goes when the account goes.
+        b.Entity<TravellerContact>(e =>
+        {
+            e.HasIndex(x => x.UserId);
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+        b.Entity<TripStop>(e =>
+        {
+            e.HasIndex(x => x.UserId);
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+        b.Entity<Review>(e =>
+        {
+            e.HasIndex(x => new { x.ListingId, x.Status });
+            e.HasIndex(x => new { x.UserId, x.ListingId }).IsUnique();
+            e.HasOne(x => x.Listing).WithMany().HasForeignKey(x => x.ListingId).OnDelete(DeleteBehavior.Cascade);
+            // Restrict keeps SQL Server to one cascade path into Reviews.
+            e.HasOne<AppUser>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+        });
         b.Entity<AuditEntry>().HasIndex(x => x.WhenUtc);
         b.Entity<RefreshToken>().HasIndex(x => x.TokenHash).IsUnique();
         b.Entity<ReminderLog>().HasIndex(x => new { x.SupplierId, x.RenewalDate, x.DaysBefore }).IsUnique();

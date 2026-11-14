@@ -41,6 +41,7 @@
             {
                 @if (staff) { <a class="btn btn-plain" href="/admin">Admin Portal</a> }
                 @if (User.IsInRole(Roles.Supplier)) { <a class="btn btn-plain" href="/supplier">My business</a> }
+                @if (User.IsInRole(Roles.Traveller)) { <a class="btn btn-plain acct" href="/account"><span class="avatar" aria-hidden="true">👤</span>My account</a> }
                 <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button class="btn btn-plain" type="submit">Sign out</button></form>
             }
             else

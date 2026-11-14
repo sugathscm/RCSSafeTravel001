@@ -1,0 +1,19 @@
+@{ Layout = "_Portal"; ViewData["Page"] = "account"; ViewData["Title"] = "Create a free account"; }
+
+<section class="sec">
+    <div class="wrap mid">
+        <form class="join-card" id="join-form" novalidate>
+            <span class="tile" aria-hidden="true">👤</span>
+            <h1>Create a free account</h1>
+            <p>A free account saves your family contacts and trip plan, and lets you review the places you visit. The same sign-in works in the app.</p>
+            <div class="field"><label class="form-label" for="j-name">Your name</label><input class="form-control" id="j-name" name="fullName" required maxlength="120" autocomplete="name"></div>
+            <div class="field"><label class="form-label" for="j-email">Email</label><input class="form-control" id="j-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+            <div class="field"><label class="form-label" for="j-pass">Password (10 characters or more, with a capital letter and a number)</label><input class="form-control" id="j-pass" name="password" type="password" required minlength="10" maxlength="100" autocomplete="new-password"></div>
+            <button class="btn btn-danger btn-lg" type="submit">Create a free account</button>
+            <a class="btn btn-plain btn-lg" href="/account/login?returnUrl=%2Faccount">I have an account · Sign in</a>
+            <span class="small mute">Free. No card needed.</span>
+        </form>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

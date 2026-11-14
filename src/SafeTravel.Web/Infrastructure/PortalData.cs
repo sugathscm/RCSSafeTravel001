@@ -3,7 +3,7 @@ using SafeTravel.Core.Services;
 
 namespace SafeTravel.Web.Infrastructure;
 
-public record ListingPage(ListingDto Listing, IReadOnlyList<ProductDto> Products, IReadOnlyList<ListingDto> More);
+public record ListingPage(ListingDto Listing, IReadOnlyList<ProductDto> Products, IReadOnlyList<ListingDto> More, IReadOnlyList<ReviewDto> Reviews);
 
 /// <summary>One safety topic on its own page, with the emergency numbers shown beside it.</summary>
 public record TopicPage(TopicDetailDto Topic, IReadOnlyList<NumberDto> Numbers);

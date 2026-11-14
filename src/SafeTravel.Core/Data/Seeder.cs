@@ -47,6 +47,7 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
                 await Staff("suppliers@safetravel.local", "Supplier manager", Roles.SupplierManager, staffPassword);
                 await Staff("finance@safetravel.local", "Finance officer", Roles.FinanceOfficer, staffPassword);
                 await Staff("agent1@safetravel.local", "Call centre agent 1", Roles.CallCentreAgent, staffPassword);
+                await Staff("emma@traveller.example", "Emma Wilson", Roles.Traveller, staffPassword);
             }
         }
 
@@ -187,6 +188,23 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
             new Payment { Kind = PaymentKind.Donation, PayerName = "A. Tanaka", Amount = 10000, Status = PaymentStatus.Paid, CreatedUtc = DateTime.UtcNow.AddDays(-8), GatewayReference = "SBX-SAMPLE0001" },
             new Payment { Kind = PaymentKind.Donation, PayerName = "H. Schmidt", Amount = 2500, Status = PaymentStatus.Paid, CreatedUtc = DateTime.UtcNow.AddDays(-4), GatewayReference = "SBX-SAMPLE0002" },
             new Payment { Kind = PaymentKind.Donation, PayerName = "Anonymous donor", Amount = 5000, Status = PaymentStatus.Paid, CreatedUtc = DateTime.UtcNow.AddDays(-2), GatewayReference = "SBX-SAMPLE0003" });
+
+        // A sample traveller with emergency contacts, a trip plan and reviews.
+        var emma = await users.FindByEmailAsync("emma@traveller.example");
+        if (emma is not null)
+        {
+            db.TravellerContacts.AddRange(
+                new TravellerContact { UserId = emma.Id, Name = "Sarah Wilson", Phone = "+44 7700 900123", Relationship = "Sister" },
+                new TravellerContact { UserId = emma.Id, Name = "James Wilson", Phone = "+44 7700 900456", Relationship = "Father" });
+            db.TripStops.AddRange(
+                new TripStop { UserId = emma.Id, Place = "Kandy", Date = today.AddDays(-2), Note = "Temple of the Tooth" },
+                new TripStop { UserId = emma.Id, Place = "Ella", Date = today, Note = "Nine Arch Bridge and Little Adam's Peak" },
+                new TripStop { UserId = emma.Id, Place = "Mirissa", Date = today.AddDays(3), Note = "Whale watching" });
+            var homestay = db.Listings.Local.FirstOrDefault(l => l.Name == "Ella Ridge Homestay") ?? await db.Listings.FirstOrDefaultAsync(l => l.Name == "Ella Ridge Homestay");
+            var walks = db.Listings.Local.FirstOrDefault(l => l.Name == "Nine Arch Walks") ?? await db.Listings.FirstOrDefaultAsync(l => l.Name == "Nine Arch Walks");
+            if (homestay is not null) db.Reviews.Add(new Review { Listing = homestay, UserId = emma.Id, AuthorName = "Emma W.", Stars = 5, Text = "Sample review. Friendly hosts, a clear view of the valley and good advice about the weather.", Status = ReviewStatus.Approved, CreatedUtc = DateTime.UtcNow.AddDays(-6), DecidedUtc = DateTime.UtcNow.AddDays(-5) });
+            if (walks is not null) db.Reviews.Add(new Review { Listing = walks, UserId = emma.Id, AuthorName = "Emma W.", Stars = 4, Text = "Sample review. The guide knew the trail well and kept the group safe in the rain.", Status = ReviewStatus.Pending, CreatedUtc = DateTime.UtcNow.AddHours(-5) });
+        }
         await db.SaveChangesAsync();
     }
 }
