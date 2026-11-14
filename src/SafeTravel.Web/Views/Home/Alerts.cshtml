@@ -1,0 +1,46 @@
+@model PortalHome
+@{
+    Layout = "_Portal"; ViewData["Page"] = "alerts"; ViewData["Title"] = "Alerts";
+    string Dot(string level) => level == "red" ? "" : level;
+    string Level(string level) => level == "red" ? "Act now" : level == "amber" ? "Be ready" : "Be aware";
+    var inv = System.Globalization.CultureInfo.InvariantCulture;
+}
+
+<section class="phero">
+    <div class="wrap mid sec-head mb-0">
+        <div>
+            <span class="eyebrow">Alerts</span>
+            <h1 class="h2x">What is happening right now</h1>
+            <p class="lead">Warnings published by the alert desk, newest first. Follow the advice in each alert and check again before you travel.</p>
+        </div>
+        <a class="btn btn-dark btn-lg" href="/map">Open the safety map →</a>
+    </div>
+</section>
+<section class="sec">
+    <div class="wrap mid vstack gap-3">
+        @foreach (var a in Model.Alerts)
+        {
+            <article class="alertrow" id="alert-@a.Id">
+                <span class="bar @Dot(a.Level)"></span>
+                <div class="txt">
+                    <div class="top"><span class="k @Dot(a.Level)">@a.Type · @Level(a.Level)</span><time datetime="@a.PublishedUtc.ToString("o")" data-ago></time></div>
+                    <h2>@a.Title</h2>
+                    @if (a.Details.Length > 0) { <p>@a.Details</p> }
+                    <div class="meta"><span>📍 @a.Area</span><span>Source: @a.Source</span></div>
+                </div>
+                @if (a.Latitude is double lat && a.Longitude is double lng)
+                {
+                    <a class="btn btn-plain" href="/map?lat=@lat.ToString(inv)&lng=@lng.ToString(inv)">Show on map</a>
+                }
+            </article>
+        }
+        @if (Model.Alerts.Count == 0)
+        {
+            <div class="empty">No active alerts right now. Check again before you travel.</div>
+        }
+        <div class="hrow mt-2">
+            <a class="btn btn-plain btn-lg" href="/emergency">Emergency numbers</a>
+            <a class="btn btn-plain btn-lg" href="/topics">Safety topics</a>
+        </div>
+    </div>
+</section>

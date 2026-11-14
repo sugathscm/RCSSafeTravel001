@@ -83,6 +83,14 @@ Under each listing a supplier can add products: rooms, dishes, tours, rentals (S
 
 Every live listing has its own page at `/listing/{id}`: details, map, promotion, all products with prices and pictures, and the supplier's other listings. Tiles on the home page and the directory open this page. The directory itself (`/find`) loads 24 tiles at a time with a **Show more** button.
 
+## Safety map and alerts
+
+- **Safety map** (`/map`): one map with layers the traveller switches on and off. Risk layers (flood zones, landslide zones, road closures, beach flags, wildlife, other risks), pinned alerts, and every help point category. Tapping a pin shows the advice, directions and, for help points, a call button.
+- **Map zones**: staff mark risk zones in the Admin Portal under **Map zones**: type, name, advice, source, position and a radius in metres (0 shows a pin only). Zones must be inside Sri Lanka.
+- **Alerts** (`/alerts`): every active alert with its level, advice, area and source. An alert can carry optional advice and an optional map position; a pinned alert shows on the map and gets a "Show on map" link.
+
+Zones and alerts are entered by staff. Feeds from the Disaster Management Centre, NBRO or the Department of Meteorology are not connected.
+
 ## Safety content pages
 
 - **Safety topics** (`/topics`, `/topics/{id}`): each topic has its own page with a "Do" list and an "Avoid" list. Staff edit the lists in the Admin Portal under **Web Portal content**, **Safety topics**, **Do and avoid** (one tip per line).
@@ -127,6 +135,7 @@ Open `/openapi/v1.json` in Development for the full list. The main calls:
 | `GET /api/v1/categories` | Categories that are switched on |
 | `GET /api/v1/listings?kind=&category=&district=&q=&lat=&lng=&radiusKm=` | Help points and businesses, nearest first when a position is sent |
 | `GET /api/v1/alerts` | Active alerts |
+| `GET /api/v1/risk-zones` | Risk zones for the safety map: type, name, advice, position and radius |
 | `GET /api/v1/topics` and `GET /api/v1/topics/{id}` | Safety topics with their do and avoid lists |
 | `GET /api/v1/first-aid` | First aid guides: steps in order and the video player address |
 | `GET /api/v1/ads` | The sponsor advertisements, up to three |

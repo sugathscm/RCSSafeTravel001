@@ -1,0 +1,54 @@
+@model PortalHome
+@{
+    Layout = "_Portal"; ViewData["Page"] = "map"; ViewData["Title"] = "Safety map";
+    string Dot(string level) => level == "red" ? "" : level;
+    // Help point categories shown when the map opens. The others are one tap away in the layer list.
+    var open = new[] { "hospital", "police", "shelter" };
+}
+@section styles { <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css"> }
+
+<div class="mapx">
+    <aside class="mapside">
+        <div>
+            <h1>Live safety map</h1>
+            <span class="small mute">All of Sri Lanka<span id="map-updated"></span></span>
+        </div>
+        <div class="lgroup">
+            <span class="eyebrow mute">Risks</span>
+            <button type="button" class="layer on" data-layer="zone-flood"><span class="ic t-blue">🌊</span><span class="l">Flood zones</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-landslide"><span class="ic t-sand">⛰️</span><span class="l">Landslide zones</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-roadclosure"><span class="ic t-sand">🚧</span><span class="l">Road closures</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-beachflag"><span class="ic t-rose">🚩</span><span class="l">Beach flags</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-wildlife"><span class="ic t-green">🐘</span><span class="l">Wildlife</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-other"><span class="ic t-olive">⚠️</span><span class="l">Other risks</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="alerts"><span class="ic t-rose">🔔</span><span class="l">Alerts</span><span class="n"></span><span class="sw"><i></i></span></button>
+        </div>
+        <div class="lgroup">
+            <span class="eyebrow mute">Help points</span>
+            @foreach (var cat in Model.Categories.Where(x => x.Kind == "help"))
+            {
+                <button type="button" class="layer @(open.Contains(cat.Slug) ? "on" : "")" data-layer="help-@cat.Slug"><span class="ic t-teal">@cat.Icon</span><span class="l">@cat.Name</span><span class="n"></span><span class="sw"><i></i></span></button>
+            }
+        </div>
+        <div class="lgroup">
+            <span class="eyebrow mute">Active alerts</span>
+            @foreach (var a in Model.Alerts)
+            {
+                <a class="malert" href="/alerts#alert-@a.Id">
+                    <span class="bar @Dot(a.Level)"></span>
+                    <span class="txt"><span class="top"><span class="k @Dot(a.Level)">@a.Type</span><time datetime="@a.PublishedUtc.ToString("o")" data-ago></time></span><b>@a.Title</b><span class="area">@a.Area</span></span>
+                </a>
+            }
+            @if (Model.Alerts.Count == 0) { <span class="small mute">No active alerts right now.</span> }
+        </div>
+    </aside>
+    <div class="mapfull">
+        <div id="safety-map" role="application" aria-label="Safety map of Sri Lanka"></div>
+        <div class="mapsel d-none" id="map-sel" aria-live="polite"></div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/leaflet/dist/leaflet.js"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+}

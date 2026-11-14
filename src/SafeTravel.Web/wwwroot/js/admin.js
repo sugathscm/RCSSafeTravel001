@@ -144,16 +144,44 @@
 
   screens.alerts = function () {
     return ST.api('GET', 'admin/alerts').then(function (list) {
-      return head('Alerts', 'Publish a warning by area. It appears on the portal home page and in the mobile apps at once.') +
+      return head('Alerts', 'Publish a warning by area. It appears on the portal home page, the Alerts page, the safety map and in the mobile apps at once.') +
         (can.alerts ? '<form class="panel" data-form="alert"><header><h3>Publish an alert</h3></header><div class="body"><div class="grid2">' +
           field('aa-type', 'Type', select('aa-type', 'type', ['Flood warning', 'Landslide watch', 'Red flag', 'Road closure', 'Storm warning', 'Health notice'].map(function (t) { return '<option>' + t + '</option>'; }).join(''))) +
           field('aa-level', 'Level', select('aa-level', 'level', '<option value="red">Red: act now</option><option value="amber" selected>Amber: be ready</option><option value="blue">Blue: be aware</option>')) +
           field('aa-area', 'Area', text('aa-area', 'area', '', 'required maxlength="120" placeholder="Nuwara Eliya"')) +
           field('aa-source', 'Source', text('aa-source', 'source', '', 'maxlength="120" placeholder="Dept. of Meteorology"')) + '</div>' +
           '<div class="mt-3">' + field('aa-title', 'Message', text('aa-title', 'title', '', 'required minlength="5" maxlength="240" placeholder="Strong winds expected tonight"')) + '</div>' +
+          '<div class="mt-3">' + field('aa-details', 'Advice (optional, shown on the Alerts page and the map)', '<textarea class="form-control" id="aa-details" name="details" rows="2" maxlength="600" placeholder="Avoid trails, waterfalls and road cuttings."></textarea>') + '</div>' +
+          '<div class="hrow align-items-end mt-3">' + field('aa-lat', 'Latitude (optional, pins the alert on the map)', text('aa-lat', 'latitude', '', 'type="number" step="any" min="5.5" max="10.2" placeholder="6.8667"'), 'flex:1 1 200px') +
+          field('aa-lng', 'Longitude', text('aa-lng', 'longitude', '', 'type="number" step="any" min="79.2" max="82.2" placeholder="81.0466"'), 'flex:1 1 200px') + '</div>' +
           '<div class="mt-3"><button class="btn btn-danger" type="submit">Publish alert</button></div></div></form>' : '') +
         panel('All alerts', table(['Alert', 'Area', 'Source', 'Sent', 'Active'], list.map(function (a) {
           return '<tr><td><span class="dot ' + (a.level === 'red' ? '' : e(a.level)) + '"></span> <b>' + e(a.title) + '</b><span class="small mute">' + e(a.type) + '</span></td><td>' + e(a.area) + '</td><td>' + e(a.source) + '</td><td class="small text-nowrap">' + ST.ago(a.publishedUtc) + '</td><td>' + sw('alert', a.id, a.isActive, '', can.alerts) + '</td></tr>';
+        })));
+    });
+  };
+
+  // ----- map zones: areas staff mark on the safety map -----
+  var ZONE_TYPES = { flood: '🌊 Flood zone', landslide: '⛰️ Landslide zone', roadclosure: '🚧 Road closure', beachflag: '🚩 Beach flag', wildlife: '🐘 Wildlife', other: '⚠️ Other risk' };
+  screens.zones = function () {
+    return ST.api('GET', 'admin/risk-zones').then(function (zones) {
+      cache.zones = zones;
+      var z = ui.edit ? zones.filter(function (x) { return x.id === ui.edit; })[0] : null;
+      var v = z || { type: 'flood', name: '', details: '', source: '', latitude: '', longitude: '', radiusMeters: 0, isActive: true };
+      return head('Map zones', 'Mark flood and landslide areas, closed roads and red-flag beaches. They appear on the safety map of the portal and in the app at once.') +
+        (can.alerts ? '<form class="panel" data-form="zone"><header><h3>' + (z ? 'Edit ' + e(z.name) : 'Add a zone') + '</h3></header><div class="body vstack gap-3"><div class="grid2">' +
+          field('az-type', 'Type', select('az-type', 'type', Object.keys(ZONE_TYPES).map(function (k) { return '<option value="' + k + '"' + (k === v.type ? ' selected' : '') + '>' + ZONE_TYPES[k] + '</option>'; }).join(''))) +
+          field('az-name', 'Name', text('az-name', 'name', v.name, 'required minlength="3" maxlength="120" placeholder="Kalu Ganga, Ratnapura"')) +
+          field('az-lat', 'Latitude', text('az-lat', 'latitude', v.latitude, 'type="number" step="any" min="5.5" max="10.2" required placeholder="6.6828"')) +
+          field('az-lng', 'Longitude', text('az-lng', 'longitude', v.longitude, 'type="number" step="any" min="79.2" max="82.2" required placeholder="80.3992"')) +
+          field('az-radius', 'Radius in metres (0 shows a pin only)', text('az-radius', 'radiusMeters', v.radiusMeters, 'type="number" min="0" max="50000" step="50" required')) +
+          field('az-source', 'Source', text('az-source', 'source', v.source, 'maxlength="120" placeholder="NBRO"')) + '</div>' +
+          field('az-details', 'Advice shown to travellers', '<textarea class="form-control" id="az-details" name="details" rows="2" maxlength="600">' + e(v.details) + '</textarea>') +
+          '<div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" role="switch" id="az-on" name="isActive"' + (v.isActive ? ' checked' : '') + '><label class="form-check-label fw-semibold" for="az-on">Show on the map</label></div>' +
+          '<div class="hrow"><button class="btn btn-danger" type="submit">' + (z ? 'Save zone' : 'Add zone') + '</button>' + (z ? btn('editCancel', 0, 'Cancel') : '') + '</div></div></form>' : '') +
+        panel('All zones', table(['Zone', 'Type', 'Source', 'Updated', 'On the map', ''], zones.map(function (x) {
+          return '<tr><td><b>' + e(x.name) + '</b><span class="small mute">' + e(x.details) + '</span></td><td class="text-nowrap">' + (ZONE_TYPES[x.type] || e(x.type)) + '</td><td>' + e(x.source) + '</td><td class="small text-nowrap">' + ST.ago(x.updatedUtc) + '</td><td>' + sw('zone', x.id, x.isActive, '', can.alerts) + '</td>' +
+            acts(can.alerts ? btn('zoneEdit', x.id, 'Edit') + btn('zoneDel', x.id, 'Delete') : '') + '</tr>';
         })));
     });
   };
@@ -259,7 +287,7 @@
 
   // ----- menu and routing: the page is kept in the address after #, so reload and back work -----
   var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['categories', '🗂️', 'Categories', true],
-    ['content', '🖥️', 'Web Portal content', can.content], ['firstaid', '🩹', 'First aid guides', true], ['alerts', '🔔', 'Alerts', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
+    ['content', '🖥️', 'Web Portal content', can.content], ['firstaid', '🩹', 'First aid guides', true], ['alerts', '🔔', 'Alerts', true], ['zones', '🗺️', 'Map zones', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
     ['users', '👥', 'Users and roles', can.admin], ['system', '🔐', 'Security and API', true], ['audit', '🧾', 'Audit log', can.admin]].filter(function (p) { return p[3]; });
   var current = 'dash', pending = 0;
 
@@ -314,6 +342,8 @@
           '<div class="hrow"><span class="sp"></span><button type="button" class="btn btn-plain" data-close>Cancel</button><button class="btn btn-danger" type="submit">Save</button></div></form>');
       });
     },
+    zoneEdit: function (id) { ui.edit = id; show().done(function () { window.scrollTo(0, 0); $('#az-name').trigger('focus'); }); },
+    zoneDel: function (id) { ST.api('DELETE', 'admin/risk-zones/' + id).done(function () { if (ui.edit === id) ui.edit = null; done('Zone removed from the map'); }); },
     guideEdit: function (id) { ui.edit = id; show().done(function () { window.scrollTo(0, 0); $('#fg-title').trigger('focus'); }); },
     guideDel: function (id) { ST.api('DELETE', 'admin/first-aid/' + id).done(function () { if (ui.edit === id) ui.edit = null; done('First aid guide deleted'); }); },
     topicDel: function (id) { ST.api('DELETE', 'admin/content/topics/' + id).done(function () { done('Topic removed from the portal'); }); },
@@ -334,6 +364,7 @@
     category: function (id, on) { return ST.api('PUT', 'admin/categories/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     section: function (id, on) { return ST.api('PUT', 'admin/content/sections/' + id, { on: on }).done(function () { ST.toast('Home page updated'); }); },
     alert: function (id, on) { return ST.api('PUT', 'admin/alerts/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Alert is live' : 'Alert expired'); }); },
+    zone: function (id, on) { return ST.api('PUT', 'admin/risk-zones/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown on the map' : 'Hidden from the map'); }); },
     guide: function (id, on) { return ST.api('PUT', 'admin/first-aid/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     sponsor: function (id, on) { return ST.api('PUT', 'admin/sponsors/' + id + '/active', { on: on }).done(function () { ST.toast('Sponsors updated'); }); },
     user: function (id, on) { return ST.api('PUT', 'admin/users/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'This person can sign in' : 'This person can no longer sign in'); }); }
@@ -349,6 +380,10 @@
     numbers: function (d, form) {
       var rows = $(form).find('.num-row').map(function () { return { label: $.trim($(this).find('[data-k="label"]').val()), number: $.trim($(this).find('[data-k="number"]').val()) }; }).get();
       return ST.api('PUT', 'admin/content/emergency-numbers', rows).done(function () { ST.toast('Emergency numbers saved'); });
+    },
+    zone: function (d) {
+      return ui.edit ? ST.api('PUT', 'admin/risk-zones/' + ui.edit, d).done(function () { ui.edit = null; done('Saved. The map shows the change now.'); })
+        : ST.api('POST', 'admin/risk-zones', d).done(function () { done('Zone added to the safety map'); });
     },
     guidance: function (d, form) { return ST.api('PUT', 'admin/content/topics/' + form.dataset.id + '/guidance', d).done(function () { ST.closeModal(); ST.toast('Saved. The topic page shows the new lists now.'); }); },
     guide: function (d) {

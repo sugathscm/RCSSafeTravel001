@@ -125,14 +125,21 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
         await Biz("wellness", "Sigiri Herbal Spa", "Anusha Kumari", "anusha@sigirispa.example", "077 555 0207", "Sigiriya", "Matale", "Daily 9:00 to 20:00", 7.955, 80.757, "Traditional Ayurveda treatments.", SupplierStatus.Pending, null, 0, 0, false, 0, 0, 0, "Business registration");
 
         db.Alerts.AddRange(
-            new Alert { Level = AlertLevel.Red, Type = "Landslide watch", Area = "Ella, Badulla", Title = "Heavy rain in the hills until Thursday evening", Source = "NBRO", PublishedUtc = DateTime.UtcNow.AddMinutes(-12) },
-            new Alert { Level = AlertLevel.Blue, Type = "Flood warning", Area = "Ratnapura", Title = "Kalu Ganga rising after heavy rain", Source = "Irrigation Department", PublishedUtc = DateTime.UtcNow.AddHours(-2) },
-            new Alert { Level = AlertLevel.Red, Type = "Red flag", Area = "Mirissa, Unawatuna", Title = "No swimming in Mirissa because of rip currents", Source = "Lifeguards", PublishedUtc = DateTime.UtcNow.AddHours(-3) },
+            new Alert { Level = AlertLevel.Red, Type = "Landslide watch", Area = "Ella, Badulla", Title = "Heavy rain in the hills until Thursday evening", Source = "NBRO", Details = "Avoid trails, waterfalls and road cuttings.", Latitude = 6.8667, Longitude = 81.0466, PublishedUtc = DateTime.UtcNow.AddMinutes(-12) },
+            new Alert { Level = AlertLevel.Blue, Type = "Flood warning", Area = "Ratnapura", Title = "Kalu Ganga rising after heavy rain", Source = "Irrigation Department", Details = "Low-lying roads around Ratnapura may flood overnight.", Latitude = 6.6828, Longitude = 80.3992, PublishedUtc = DateTime.UtcNow.AddHours(-2) },
+            new Alert { Level = AlertLevel.Red, Type = "Red flag", Area = "Mirissa, Unawatuna", Title = "No swimming in Mirissa because of rip currents", Source = "Lifeguards", Details = "Rough seas along the south coast. Swim only where a lifeguard is on duty.", Latitude = 5.9483, Longitude = 80.4589, PublishedUtc = DateTime.UtcNow.AddHours(-3) },
             new Alert { Level = AlertLevel.Amber, Type = "Road closure", Area = "Haputale", Title = "A16 closed between Haputale and Beragala", Source = "Road Development Authority", PublishedUtc = DateTime.UtcNow.AddDays(-1), IsActive = false });
 
         string[][] topics = [["Floods, landslides & storms", "Monsoon floods, hill-country landslides, cyclones, lightning and heat.", "🌧️", "blue"], ["Beach & water safety", "Rip currents, monsoon seas, rivers and waterfalls.", "🌊", "teal"],
             ["Health", "Dengue, food and water, heat illness.", "🦟", "green"], ["First aid", "What to do until help arrives.", "🩹", "rose"],
             ["Roads & transport", "Tuk-tuks, buses, trains, scooters and night driving.", "🛺", "sand"], ["Wildlife", "Elephants, snakes, monkeys, leeches and safaris.", "🐘", "olive"]];
+        // Sample risk zones for the safety map. Staff replace them with live information.
+        db.RiskZones.AddRange(
+            new RiskZone { Type = RiskZoneType.Landslide, Name = "Ella hill slopes", Details = "Avoid trails, waterfalls and road cuttings in heavy rain.", Source = "NBRO", Latitude = 6.8667, Longitude = 81.0466, RadiusMeters = 3000 },
+            new RiskZone { Type = RiskZoneType.RoadClosure, Name = "Ella to Wellawaya road (A23) at Ravana Falls", Details = "Closed after a rockfall. Use the Badulla route.", Source = "Police", Latitude = 6.8406, Longitude = 81.0548 },
+            new RiskZone { Type = RiskZoneType.Flood, Name = "Kalu Ganga, Ratnapura", Details = "Low-lying roads around Ratnapura may flood overnight.", Source = "Irrigation Department", Latitude = 6.6828, Longitude = 80.3992, RadiusMeters = 4000 },
+            new RiskZone { Type = RiskZoneType.BeachFlag, Name = "Mirissa beach", Details = "Red flag. No swimming because of rip currents.", Source = "Lifeguards", Latitude = 5.9483, Longitude = 80.4589, RadiusMeters = 600 });
+
         // Sample guidance, one tip per line. The Red Cross reviews the wording before launch.
         var guidance = new Dictionary<string, (string Dos, string Donts)>
         {

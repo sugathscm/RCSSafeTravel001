@@ -61,6 +61,10 @@ public class PublicApi(ContentService content, ListingService listings, AlertSer
     [HttpGet("first-aid"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<FirstAidGuideDto>> FirstAid([FromServices] SafetyContentService safety, CancellationToken ct) => safety.GuidesAsync(true, ct);
 
+    /// <summary>Active risk zones for the safety map: flood and landslide areas, road closures, red-flag beaches.</summary>
+    [HttpGet("risk-zones"), OutputCache(PolicyName = "alerts")]
+    public Task<IReadOnlyList<RiskZoneDto>> RiskZones([FromServices] MapService map, CancellationToken ct) => map.ZonesAsync(true, ct);
+
     [HttpGet("emergency-numbers"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<NumberDto>> Numbers(CancellationToken ct) => content.NumbersAsync(ct);
 
