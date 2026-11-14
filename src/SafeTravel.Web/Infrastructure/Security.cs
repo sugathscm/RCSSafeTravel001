@@ -131,7 +131,7 @@ public static class CacheTags
 public class SecurityHeadersMiddleware(RequestDelegate next)
 {
     private const string Csp = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org; " +
-                               "font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
+                               "font-src 'self'; connect-src 'self'; frame-src https://player.vimeo.com https://streamable.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 
     public Task Invoke(HttpContext ctx)
     {

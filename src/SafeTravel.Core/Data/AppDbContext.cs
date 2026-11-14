@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Advertisement> Advertisements => Set<Advertisement>();
     public DbSet<EmergencyNumber> EmergencyNumbers => Set<EmergencyNumber>();
     public DbSet<Topic> Topics => Set<Topic>();
+    public DbSet<FirstAidGuide> FirstAidGuides => Set<FirstAidGuide>();
     public DbSet<SiteSetting> SiteSettings => Set<SiteSetting>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();

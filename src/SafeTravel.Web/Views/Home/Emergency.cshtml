@@ -1,0 +1,46 @@
+@model EmergencyPage
+@{ Layout = "_Portal"; ViewData["Page"] = "emergency"; ViewData["Title"] = "Emergency numbers"; }
+
+<section class="band-red">
+    <div class="wrap mid">
+        <span class="eyebrow">Emergency numbers · Sri Lanka</span>
+        <h1>Stay calm. Help is a call away.</h1>
+        <p>Save these numbers before you travel. In an emergency, call first, then follow what the operator tells you.</p>
+    </div>
+</section>
+<section class="sec">
+    <div class="wrap mid vstack gap-4">
+        <div class="enums">
+            @foreach (var n in Model.Numbers)
+            {
+                <div class="enum">
+                    <span class="l">@n.Label</span>
+                    <b class="num @(n.Number.Length > 5 ? "long" : "")">@n.Number</b>
+                    <a class="btn btn-dark" href="tel:@n.Number.Replace(" ", "")">Call</a>
+                </div>
+            }
+        </div>
+        <div class="duo">
+            <div class="gcard tone-sand">
+                <h2>What to tell the operator</h2>
+                <span>1. Where you are: the town, a landmark, or your location from your phone's map</span>
+                <span>2. What happened, and how many people are hurt</span>
+                <span>3. Your phone number. Stay on the line until they tell you to hang up</span>
+            </div>
+            @if (Model.Hospitals.Count > 0)
+            {
+                <div class="gcard">
+                    <h2>Hospitals</h2>
+                    @foreach (var h in Model.Hospitals)
+                    {
+                        <a class="nrow" href="/listing/@h.Id"><span>🏥 @h.Name</span><span class="mute">@h.Town</span></a>
+                    }
+                </div>
+            }
+        </div>
+        <div class="hrow">
+            <a class="btn btn-plain btn-lg" href="/first-aid">🩹 First aid guides</a>
+            <a class="btn btn-dark btn-lg" href="/find?kind=help">Find help near you</a>
+        </div>
+    </div>
+</section>

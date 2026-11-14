@@ -101,6 +101,29 @@ public record NumberDto(int Id, string Label, string Number);
 public record TopicDto(int Id, string Name, string Summary, string Icon, string Tone);
 public record SponsorDto(int Id, string Name, string Role, bool IsActive);
 
+/// <summary>A topic with its do and avoid lists, as shown on the topic's own page.</summary>
+public record TopicDetailDto(int Id, string Name, string Summary, string Icon, string Tone, IReadOnlyList<string> Dos, IReadOnlyList<string> Donts);
+
+public class TopicGuidanceInput
+{
+    /// <summary>One tip per line.</summary>
+    [StringLength(2000)] public string? Dos { get; set; }
+    [StringLength(2000)] public string? Donts { get; set; }
+}
+
+/// <summary>A first aid guide. VideoEmbedUrl is the player address for a Vimeo or Streamable video, or null.</summary>
+public record FirstAidGuideDto(int Id, string Title, string Icon, IReadOnlyList<string> Steps, string? VideoUrl, string? VideoEmbedUrl, bool IsActive);
+
+public class FirstAidGuideInput
+{
+    [Required, StringLength(120, MinimumLength = 3)] public string Title { get; set; } = "";
+    [StringLength(16)] public string? Icon { get; set; }
+    /// <summary>One step per line.</summary>
+    [Required, StringLength(4000)] public string Steps { get; set; } = "";
+    [StringLength(300)] public string? VideoUrl { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
 public record ProductDto(int Id, int ListingId, string Name, string Description, decimal? Price, string Unit, string? ImageUrl, bool IsActive);
 
 public class ProductInput

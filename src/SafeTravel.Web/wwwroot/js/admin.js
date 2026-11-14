@@ -131,7 +131,7 @@
         '<form class="panel" data-form="numbers"><header><h3>Emergency numbers</h3><span class="sp"></span><span class="small mute">Shown in the top bar, the footer and the app</span></header><div class="body"><div class="grid2" id="numbers">' +
         c.emergencyNumbers.map(numberRow).join('') + '</div><div class="hrow mt-3"><button class="btn btn-danger" type="submit">Save numbers</button>' + btn('numberAdd', 0, 'Add a number') + '</div></div></form>' +
         '<form class="panel" data-form="topic"><header><h3>Safety topics</h3></header>' + table(['Topic', 'Summary', ''], c.topics.map(function (t) {
-          return '<tr><td><b>' + e(t.icon) + ' ' + e(t.name) + '</b></td><td class="small">' + e(t.summary) + '</td>' + acts(btn('topicDel', t.id, 'Remove')) + '</tr>';
+          return '<tr><td><b>' + e(t.icon) + ' ' + e(t.name) + '</b></td><td class="small">' + e(t.summary) + '</td>' + acts(btn('topicEdit', t.id, 'Do and avoid') + btn('topicDel', t.id, 'Remove')) + '</tr>';
         })) + '<div class="body hrow align-items-end">' + field('at-icon', 'Icon', text('at-icon', 'icon', '📘', 'maxlength="8"'), 'flex:0 1 80px') + field('at-name', 'New topic', text('at-name', 'name', '', 'required maxlength="120"'), 'flex:1 1 180px') +
         field('at-text', 'Summary', text('at-text', 'summary', '', 'required maxlength="400"'), 'flex:2 1 240px') + '<button class="btn btn-danger" type="submit">Add topic</button></div></form>';
     });
@@ -189,6 +189,27 @@
           (ad.imageUrl ? '<div>' + btn('adImageDel', slot, 'Remove picture') + '</div>' : '') : '<p class="small mute">Save the text first, then add a picture.</p>') : '') + '</form>';
   }
 
+  // ----- first aid guides: steps one per line, and an optional Vimeo or Streamable video -----
+  screens.firstaid = function () {
+    return ST.api('GET', 'admin/first-aid').then(function (guides) {
+      cache.guides = guides;
+      var g = ui.edit ? guides.filter(function (x) { return x.id === ui.edit; })[0] : null;
+      var v = g || { title: '', icon: '🩹', steps: [], videoUrl: '', isActive: true };
+      return head('First aid guides', 'Step-by-step guides on the First aid page of the portal and in the app. Add a Vimeo or Streamable link to show a video with a guide.') +
+        (can.content ? '<form class="panel" data-form="guide"><header><h3>' + (g ? 'Edit ' + e(g.title) : 'Add a guide') + '</h3></header><div class="body vstack gap-3"><div class="hrow align-items-end">' +
+          field('fg-icon', 'Icon', text('fg-icon', 'icon', v.icon, 'maxlength="8"'), 'flex:0 1 90px') +
+          field('fg-title', 'Title', text('fg-title', 'title', v.title, 'required minlength="3" maxlength="120" placeholder="Severe bleeding"'), 'flex:2 1 240px') +
+          field('fg-video', 'Video link, Vimeo or Streamable (optional)', text('fg-video', 'videoUrl', v.videoUrl || '', 'maxlength="300" placeholder="https://vimeo.com/123456789"'), 'flex:2 1 260px') + '</div>' +
+          field('fg-steps', 'Steps, one per line', '<textarea class="form-control" id="fg-steps" name="steps" rows="6" maxlength="4000" required>' + e(v.steps.join('\n')) + '</textarea>') +
+          '<div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" role="switch" id="fg-on" name="isActive"' + (v.isActive ? ' checked' : '') + '><label class="form-check-label fw-semibold" for="fg-on">Show to the public</label></div>' +
+          '<div class="hrow"><button class="btn btn-danger" type="submit">' + (g ? 'Save guide' : 'Add guide') + '</button>' + (g ? btn('editCancel', 0, 'Cancel') : '') + '</div></div></form>' : '') +
+        panel('All guides', table(['Guide', 'Steps', 'Video', 'Shown to the public', ''], guides.map(function (x) {
+          return '<tr><td><b>' + e(x.icon) + ' ' + e(x.title) + '</b></td><td class="num">' + x.steps.length + '</td><td>' + (x.videoUrl ? '<span class="pill ok">Video</span>' : '<span class="mute small">None</span>') + '</td><td>' + sw('guide', x.id, x.isActive, '', can.content) + '</td>' +
+            acts(can.content ? btn('guideEdit', x.id, 'Edit') + btn('guideDel', x.id, 'Delete') : '') + '</tr>';
+        })));
+    });
+  };
+
   screens.sponsors = function () {
     return $.when(ST.api('GET', 'admin/sponsors'), ST.api('GET', 'admin/ads')).then(function (a, b) {
       var list = a[0], ads = b[0];
@@ -238,7 +259,7 @@
 
   // ----- menu and routing: the page is kept in the address after #, so reload and back work -----
   var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['categories', '🗂️', 'Categories', true],
-    ['content', '🖥️', 'Web Portal content', can.content], ['alerts', '🔔', 'Alerts', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
+    ['content', '🖥️', 'Web Portal content', can.content], ['firstaid', '🩹', 'First aid guides', true], ['alerts', '🔔', 'Alerts', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
     ['users', '👥', 'Users and roles', can.admin], ['system', '🔐', 'Security and API', true], ['audit', '🧾', 'Audit log', can.admin]].filter(function (p) { return p[3]; });
   var current = 'dash', pending = 0;
 
@@ -283,6 +304,18 @@
       ST.modal('<h3>Delete this help point?</h3><p>' + e(l ? l.name : '') + ' will be removed from the portal and the app. This cannot be undone.</p><div class="hrow"><span class="sp"></span><button type="button" class="btn btn-plain" data-close>Keep it</button>' + btn('delYes', id, 'Delete', 'btn-danger') + '</div>');
     },
     delYes: function (id) { ST.api('DELETE', 'admin/listings/' + id).done(function () { ST.closeModal(); done('Help point deleted'); }); },
+    topicEdit: function (id) {
+      ST.api('GET', 'admin/content/topics').done(function (topics) {
+        var t = topics.filter(function (x) { return x.id === id; })[0];
+        if (!t) return;
+        ST.modal('<form data-form="guidance" data-id="' + id + '" class="vstack gap-3"><h3>' + e(t.icon) + ' ' + e(t.name) + '</h3><p class="small mute">One tip per line. These lists are shown on the topic\'s own page.</p>' +
+          field('tg-dos', 'Do', '<textarea class="form-control" id="tg-dos" name="dos" rows="5" maxlength="2000">' + e(t.dos.join('\n')) + '</textarea>') +
+          field('tg-donts', 'Avoid', '<textarea class="form-control" id="tg-donts" name="donts" rows="4" maxlength="2000">' + e(t.donts.join('\n')) + '</textarea>') +
+          '<div class="hrow"><span class="sp"></span><button type="button" class="btn btn-plain" data-close>Cancel</button><button class="btn btn-danger" type="submit">Save</button></div></form>');
+      });
+    },
+    guideEdit: function (id) { ui.edit = id; show().done(function () { window.scrollTo(0, 0); $('#fg-title').trigger('focus'); }); },
+    guideDel: function (id) { ST.api('DELETE', 'admin/first-aid/' + id).done(function () { if (ui.edit === id) ui.edit = null; done('First aid guide deleted'); }); },
     topicDel: function (id) { ST.api('DELETE', 'admin/content/topics/' + id).done(function () { done('Topic removed from the portal'); }); },
     numberAdd: function () { $('#numbers').append(numberRow()); $('#numbers .num-row:last input:first').trigger('focus'); },
     numberDel: function (id, el) { $(el).closest('.num-row').remove(); },
@@ -301,6 +334,7 @@
     category: function (id, on) { return ST.api('PUT', 'admin/categories/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     section: function (id, on) { return ST.api('PUT', 'admin/content/sections/' + id, { on: on }).done(function () { ST.toast('Home page updated'); }); },
     alert: function (id, on) { return ST.api('PUT', 'admin/alerts/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Alert is live' : 'Alert expired'); }); },
+    guide: function (id, on) { return ST.api('PUT', 'admin/first-aid/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     sponsor: function (id, on) { return ST.api('PUT', 'admin/sponsors/' + id + '/active', { on: on }).done(function () { ST.toast('Sponsors updated'); }); },
     user: function (id, on) { return ST.api('PUT', 'admin/users/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'This person can sign in' : 'This person can no longer sign in'); }); }
   };
@@ -315,6 +349,11 @@
     numbers: function (d, form) {
       var rows = $(form).find('.num-row').map(function () { return { label: $.trim($(this).find('[data-k="label"]').val()), number: $.trim($(this).find('[data-k="number"]').val()) }; }).get();
       return ST.api('PUT', 'admin/content/emergency-numbers', rows).done(function () { ST.toast('Emergency numbers saved'); });
+    },
+    guidance: function (d, form) { return ST.api('PUT', 'admin/content/topics/' + form.dataset.id + '/guidance', d).done(function () { ST.closeModal(); ST.toast('Saved. The topic page shows the new lists now.'); }); },
+    guide: function (d) {
+      return ui.edit ? ST.api('PUT', 'admin/first-aid/' + ui.edit, d).done(function () { ui.edit = null; done('Saved. The portal and app show the change now.'); })
+        : ST.api('POST', 'admin/first-aid', d).done(function () { done('Guide added to the portal and the app'); });
     },
     topic: function (d) { return ST.api('POST', 'admin/content/topics', d).done(function () { done('Topic added to the portal'); }); },
     alert: function (d) { return ST.api('POST', 'admin/alerts', d).done(function () { done('Alert published to the portal and the app'); }); },

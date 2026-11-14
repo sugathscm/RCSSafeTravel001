@@ -104,7 +104,7 @@ builder.Services.AddSingleton<IClock, SystemClock>();
 builder.Services.AddSingleton<INotificationSender, LogNotificationSender>();
 builder.Services.AddSingleton<IPaymentGateway, SandboxPaymentGateway>();
 builder.Services.AddScoped<AuditService>().AddScoped<SettingsService>().AddScoped<ListingService>().AddScoped<ProductService>().AddScoped<SupplierService>()
-    .AddScoped<ContentService>().AddScoped<AlertService>().AddScoped<PaymentService>().AddScoped<DashboardService>()
+    .AddScoped<ContentService>().AddScoped<SafetyContentService>().AddScoped<AlertService>().AddScoped<PaymentService>().AddScoped<DashboardService>()
     .AddScoped<TokenService>().AddScoped<SafeTravel.Web.Api.SignInChecker>().AddScoped<Seeder>().AddScoped<PortalData>().AddSingleton<UploadStore>().AddScoped<ApiAntiforgeryFilter>();
 builder.Services.AddHostedService<RenewalWorker>();
 

@@ -1,0 +1,52 @@
+@model FirstAidPage
+@{
+    Layout = "_Portal"; ViewData["Page"] = "firstaid"; ViewData["Title"] = "First aid";
+    var g = Model.Guide;
+    var ambulance = Model.Ambulance;
+}
+
+<section class="phero">
+    <div class="wrap mid sec-head mb-0">
+        <div>
+            <span class="eyebrow">First aid</span>
+            <h1 class="h2x">What to do until help arrives</h1>
+            <p class="lead">Step-by-step guides. If someone is badly hurt, call for help first.</p>
+        </div>
+        @if (ambulance is not null)
+        {
+            <a class="btn btn-danger btn-xl btn-glow" href="tel:@ambulance.Replace(" ", "")">📞 Call ambulance @ambulance</a>
+        }
+    </div>
+</section>
+<section class="sec">
+    <div class="wrap mid fagrid">
+        @if (g is null)
+        {
+            <div class="empty w-100">No first aid guides have been published yet.</div>
+        }
+        else
+        {
+            <nav class="guides" aria-label="First aid guides">
+                @foreach (var x in Model.Guides)
+                {
+                    <a href="/first-aid/@x.Id" aria-current="@(x.Id == g.Id ? "page" : null)"><span class="e">@x.Icon</span><span class="t">@x.Title</span><span class="n">@x.Steps.Count steps</span></a>
+                }
+            </nav>
+            <div class="guide">
+                <div class="ghead"><span class="emoji">@g.Icon</span><h2>@g.Title</h2></div>
+                @if (g.VideoEmbedUrl is not null)
+                {
+                    <div class="video"><iframe src="@g.VideoEmbedUrl" title="Video: @g.Title" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+                }
+                @for (var i = 0; i < g.Steps.Count; i++)
+                {
+                    <div class="gstep"><span class="n">@(i + 1)</span><span>@g.Steps[i]</span></div>
+                }
+                <div class="hrow mt-2">
+                    <a class="btn btn-plain" href="/emergency">All emergency numbers</a>
+                    <a class="btn btn-dark" href="/find?kind=help&category=hospital">Find a hospital</a>
+                </div>
+            </div>
+        }
+    </div>
+</section>
