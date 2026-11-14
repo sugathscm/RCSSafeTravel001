@@ -91,7 +91,7 @@ The Web Portal home page has three advertisement places, one per sponsor, shown 
 
 The screens follow the approved Safe Travel prototype (web portal): 1280px pages, large rounded cards, Bricolage Grotesque headings, Public Sans text, one signal red. All of it lives in `src/SafeTravel.Web/wwwroot/css/site.css`. The Admin and Supplier portals use the same design language.
 
-The Sri Lanka Red Cross Society logo is one file: put it at `src/SafeTravel.Web/wwwroot/img/slrcs-logo.png` (square PNG, transparent background, 200px or larger). It appears in the header, hero badge, footer, sign-in page and both admin portals. Until the file is there, a neutral shield mark is shown in its place.
+The Sri Lanka Red Cross Society logo is one file, `src/SafeTravel.Web/wwwroot/img/slrcs-logo.png` (square PNG). It appears in the header, hero badge, footer, sign-in page and both admin portals. To change it, replace that file. If the file is ever missing, a neutral shield mark is shown in its place.
 
 ## What is where
 
