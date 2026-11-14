@@ -6,8 +6,8 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl">
         <div class="body vstack gap-3">
-            <a class="brand" href="/"><span class="brand-logo"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span><span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">by Sri Lanka Red Cross Society</span></span></a>
-            <h1>Sign in</h1>
+            <a class="brand" href="/"><span class="brand-logo"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span><span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">@T["by Sri Lanka Red Cross Society"]</span></span></a>
+            <h1>@T["Sign in"]</h1>
             @if (!string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-danger mb-0" role="alert">@Model.Error</div> }
             @if (Model.NeedsCode && string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-info mb-0" role="status">Enter the six-digit code from your authenticator app.</div> }
             <div class="field"><label class="form-label" for="l-email">Email</label><input class="form-control" id="l-email" name="Email" type="email" value="@Model.Email" required autocomplete="username" autofocus></div>
@@ -16,8 +16,8 @@
             {
                 <div class="field"><label class="form-label" for="l-code">Authenticator code</label><input class="form-control num" id="l-code" name="Code" inputmode="numeric" maxlength="7" autocomplete="one-time-code"></div>
             }
-            <button class="btn btn-danger" type="submit">Sign in</button>
-            <p class="small mute mb-0">Staff, suppliers and travellers use the same sign-in. New business? <a href="/register">Register here</a>. New traveller? <a href="/join">Create a free account</a>.</p>
+            <button class="btn btn-danger" type="submit">@T["Sign in"]</button>
+            <p class="small mute mb-0">Staff, suppliers and travellers use the same sign-in. New business? <a href="/register">Register here</a>. New traveller? <a href="/join">@T["Create a free account"]</a>.</p>
         </div>
     </form>
 </main>

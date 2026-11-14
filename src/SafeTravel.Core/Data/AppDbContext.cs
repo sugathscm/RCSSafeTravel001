@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<TravellerContact> TravellerContacts => Set<TravellerContact>();
     public DbSet<TripStop> TripStops => Set<TripStop>();
     public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<PartnerEnquiry> PartnerEnquiries => Set<PartnerEnquiry>();
     public DbSet<SiteSetting> SiteSettings => Set<SiteSetting>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
@@ -75,6 +76,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         b.Entity<Alert>().HasIndex(x => new { x.IsActive, x.PublishedUtc });
         b.Entity<RiskZone>().HasIndex(x => x.IsActive);
+        b.Entity<PartnerEnquiry>().HasIndex(x => new { x.IsHandled, x.CreatedUtc });
 
         // A traveller's own data goes when the account goes.
         b.Entity<TravellerContact>(e =>

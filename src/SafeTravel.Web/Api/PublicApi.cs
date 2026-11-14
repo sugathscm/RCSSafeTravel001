@@ -69,6 +69,10 @@ public class PublicApi(ContentService content, ListingService listings, AlertSer
     [HttpGet("risk-zones"), OutputCache(PolicyName = "alerts")]
     public Task<IReadOnlyList<RiskZoneDto>> RiskZones([FromServices] MapService map, CancellationToken ct) => map.ZonesAsync(true, ct);
 
+    /// <summary>A hotel or tour operator asks to share Safe Travel with its guests. Staff follow it up.</summary>
+    [HttpPost("partner-enquiries"), EnableRateLimiting("write")]
+    public async Task<IActionResult> AskPartner(PartnerEnquiryInput input, [FromServices] PartnerService partners, CancellationToken ct) { await partners.AddAsync(input, ct); return NoContent(); }
+
     [HttpGet("emergency-numbers"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<NumberDto>> Numbers(CancellationToken ct) => content.NumbersAsync(ct);
 

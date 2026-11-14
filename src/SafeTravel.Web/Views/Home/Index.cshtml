@@ -10,18 +10,18 @@
 <section class="hero">
     <div class="wrap">
         <div class="hmain">
-            <span class="hbadge"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span>Official travel-safety service of the Red Cross</span></span>
+            <span class="hbadge"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span>@T["Official travel-safety service of the Red Cross"]</span></span>
             <h1>@c.HeroTitle</h1>
             <p>@c.HeroText</p>
             <div class="hrow">
-                <a class="btn btn-danger btn-xl btn-glow" href="/find?kind=help">Find help near you</a>
-                <a class="btn btn-glass btn-xl" href="/map">Open the live map →</a>
+                <a class="btn btn-danger btn-xl btn-glow" href="/find?kind=help">@T["Find help near you"]</a>
+                <a class="btn btn-glass btn-xl" href="/map">@T["Open the live map"] →</a>
             </div>
         </div>
         @if (On("alerts") && Model.Alerts.Count > 0)
         {
             <div class="live" id="live-alerts">
-                <h4><span><span class="dot"></span> Live right now</span><span class="upd">Updated <time datetime="@(Model.Alerts.Max(a => a.PublishedUtc).ToString("o"))" data-ago></time></span></h4>
+                <h4><span><span class="dot"></span> @T["Live right now"]</span><span class="upd">Updated <time datetime="@(Model.Alerts.Max(a => a.PublishedUtc).ToString("o"))" data-ago></time></span></h4>
                 @foreach (var a in Model.Alerts.Take(3))
                 {
                     <a class="al" href="/alerts#alert-@a.Id">
@@ -34,13 +34,13 @@
         }
     </div>
 </section>
-<div class="srcs"><div class="wrap"><span class="eyebrow mute">Alerts &amp; data from</span><span>Disaster Management Centre</span><span>NBRO</span><span>Dept. of Meteorology</span><span>Ministry of Health</span></div></div>
+<div class="srcs"><div class="wrap"><span class="eyebrow mute">@T["Alerts & data from"]</span><span>Disaster Management Centre</span><span>NBRO</span><span>Dept. of Meteorology</span><span>Ministry of Health</span></div></div>
 
 @if (On("ads") && Model.Ads.Count > 0)
 {
     <section class="sec adsec" aria-label="Sponsor advertisements">
         <div class="wrap">
-            <span class="eyebrow mute">Sponsored</span>
+            <span class="eyebrow mute">@T["Sponsored"]</span>
             <div class="ads">
                 @foreach (var ad in Model.Ads)
                 {
@@ -64,8 +64,8 @@
     <section class="sec first">
         <div class="wrap split">
             <div>
-                <span class="eyebrow">Find help</span>
-                <h2>Banks, SOS points and police stations on one map</h2>
+                <span class="eyebrow">@T["Find help"]</span>
+                <h2>@T["Banks, SOS points and police stations on one map"]</h2>
                 <p class="lead">Every help point is kept up to date by the admin team. Choose a category to see the list, or tap a pin.</p>
                 <div class="chips">
                     @foreach (var cat in Model.Categories.Where(x => x.Kind == "help"))
@@ -73,7 +73,7 @@
                         <a class="chip" href="/find?kind=help&category=@cat.Slug"><span>@cat.Icon</span>@cat.Name</a>
                     }
                 </div>
-                <a class="btn btn-dark btn-lg mt-4" href="/map">Open the full map →</a>
+                <a class="btn btn-dark btn-lg mt-4" href="/map">@T["Open the full map"] →</a>
             </div>
             <div class="map" id="help-map" role="application" aria-label="Map of help points"></div>
         </div>
@@ -86,10 +86,10 @@
         <div class="wrap">
             <div class="sec-head">
                 <div>
-                    <span class="eyebrow">Safety topics</span>
-                    <h2>Know before you go</h2>
+                    <span class="eyebrow">@T["Safety topics"]</span>
+                    <h2>@T["Know before you go"]</h2>
                 </div>
-                <a class="btn btn-text" href="/topics">All topics →</a>
+                <a class="btn btn-text" href="/topics">@T["All topics"] →</a>
             </div>
             <div class="cards mt-0">
                 @foreach (var t in c.Topics)
@@ -107,12 +107,12 @@
         <div class="wrap">
             <div class="band">
                 <div class="intro">
-                    <span class="eyebrow">Verified businesses</span>
-                    <h2>Places travellers can trust</h2>
+                    <span class="eyebrow">@T["Verified businesses"]</span>
+                    <h2>@T["Places travellers can trust"]</h2>
                     <p class="lead">Every business here is registered, checked by the admin team and renewed each year.</p>
                     <div class="hrow">
-                        <a class="btn btn-danger btn-lg" href="/find?kind=business">See all businesses →</a>
-                        <a class="btn btn-line btn-lg" href="/register">List your business</a>
+                        <a class="btn btn-danger btn-lg" href="/find?kind=business">@T["See all businesses"] →</a>
+                        <a class="btn btn-line btn-lg" href="/register">@T["List your business"]</a>
                     </div>
                 </div>
                 <div class="places">
@@ -124,9 +124,9 @@
                                 <h3>@l.Name</h3>
                                 <span class="meta">@l.Category · @l.Town</span>
                                 <span class="tags">
-                                    @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
+                                    @if (l.IsVerified) { <span class="pill ok">✓ @T["Verified"]</span> }
                                     @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0")</span> }
-                                    @if (l.Promotion is not null) { <span class="promo-badge">Promotion</span> }
+                                    @if (l.Promotion is not null) { <span class="promo-badge">@T["Promotion"]</span> }
                                 </span>
                                 @if (l.Promotion is not null) { <span class="promo-line">@l.Promotion.Title</span> }
                             </div>
@@ -140,19 +140,25 @@
 
 <section class="sec">
     <div class="wrap duo">
+        <a class="big tone-blue" href="/partners">
+            <span class="emoji">🏨</span>
+            <h3>@T["Hotels & tour operators"]</h3>
+            <p>Share Safe Travel with every guest at check-in and with tour bookings.</p>
+            <span class="go">@T["Become a partner"] →</span>
+        </a>
         <a class="big tone-green" href="/register">
             <span class="emoji">🏪</span>
-            <h3>Own a business?</h3>
+            <h3>@T["Own a business?"]</h3>
             <p>Register, upload your documents and pay LKR @c.AnnualFee.ToString("N0") a year to appear on the map and in the app.</p>
-            <span class="go">List your business →</span>
+            <span class="go">@T["List your business"] →</span>
         </a>
         @if (On("donate"))
         {
             <a class="big tone-rose" href="/donate">
                 <span class="emoji">❤️</span>
-                <h3>Support disaster response</h3>
+                <h3>@T["Support disaster response"]</h3>
                 <p>Donations support flood relief and first aid training across Sri Lanka.</p>
-                <span class="go">Donate →</span>
+                <span class="go">@T["Donate"] →</span>
             </a>
         }
     </div>
@@ -162,7 +168,7 @@
 {
     <section class="sec pt-0">
         <div class="wrap">
-            <span class="eyebrow mute">Sponsors</span>
+            <span class="eyebrow mute">@T["Sponsors"]</span>
             <div class="spons">
                 @foreach (var s in c.Sponsors)
                 {

@@ -10,28 +10,28 @@
 <div class="mapx">
     <aside class="mapside">
         <div>
-            <h1>Live safety map</h1>
+            <h1>@T["Live safety map"]</h1>
             <span class="small mute">All of Sri Lanka<span id="map-updated"></span></span>
         </div>
         <div class="lgroup">
-            <span class="eyebrow mute">Risks</span>
-            <button type="button" class="layer on" data-layer="zone-flood"><span class="ic t-blue">🌊</span><span class="l">Flood zones</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="zone-landslide"><span class="ic t-sand">⛰️</span><span class="l">Landslide zones</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="zone-roadclosure"><span class="ic t-sand">🚧</span><span class="l">Road closures</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="zone-beachflag"><span class="ic t-rose">🚩</span><span class="l">Beach flags</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="zone-wildlife"><span class="ic t-green">🐘</span><span class="l">Wildlife</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="zone-other"><span class="ic t-olive">⚠️</span><span class="l">Other risks</span><span class="n"></span><span class="sw"><i></i></span></button>
-            <button type="button" class="layer on" data-layer="alerts"><span class="ic t-rose">🔔</span><span class="l">Alerts</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <span class="eyebrow mute">@T["Risks"]</span>
+            <button type="button" class="layer on" data-layer="zone-flood"><span class="ic t-blue">🌊</span><span class="l">@T["Flood zones"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-landslide"><span class="ic t-sand">⛰️</span><span class="l">@T["Landslide zones"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-roadclosure"><span class="ic t-sand">🚧</span><span class="l">@T["Road closures"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-beachflag"><span class="ic t-rose">🚩</span><span class="l">@T["Beach flags"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-wildlife"><span class="ic t-green">🐘</span><span class="l">@T["Wildlife"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="zone-other"><span class="ic t-olive">⚠️</span><span class="l">@T["Other risks"]</span><span class="n"></span><span class="sw"><i></i></span></button>
+            <button type="button" class="layer on" data-layer="alerts"><span class="ic t-rose">🔔</span><span class="l">@T["Alerts"]</span><span class="n"></span><span class="sw"><i></i></span></button>
         </div>
         <div class="lgroup">
-            <span class="eyebrow mute">Help points</span>
+            <span class="eyebrow mute">@T["Help points"]</span>
             @foreach (var cat in Model.Categories.Where(x => x.Kind == "help"))
             {
                 <button type="button" class="layer @(open.Contains(cat.Slug) ? "on" : "")" data-layer="help-@cat.Slug"><span class="ic t-teal">@cat.Icon</span><span class="l">@cat.Name</span><span class="n"></span><span class="sw"><i></i></span></button>
             }
         </div>
         <div class="lgroup">
-            <span class="eyebrow mute">Active alerts</span>
+            <span class="eyebrow mute">@T["Active alerts"]</span>
             @foreach (var a in Model.Alerts)
             {
                 <a class="malert" href="/alerts#alert-@a.Id">

@@ -111,6 +111,9 @@
 
   $('time[data-ago]').each(function () { $(this).text(ST.ago(this.getAttribute('datetime'))); });
 
+  // Language selector: the server remembers the choice in a cookie and sends the visitor back to the same page.
+  $('#lang').on('change', function () { location.href = '/language/' + encodeURIComponent(this.value) + '?returnUrl=' + encodeURIComponent(location.pathname + location.search); });
+
   // The Red Cross logo is one file, wwwroot/img/slrcs-logo.png. If it is missing, show the neutral mark, not a broken picture.
   $('img[data-logo]').each(function () {
     var img = this;

@@ -10,44 +10,50 @@
 <div class="ebar">
     <div class="wrap">
         <div class="nums">
-            <span class="hot">🆘 Emergency in Sri Lanka</span>
+            <span class="hot">🆘 @T["Emergency in Sri Lanka"]</span>
             @foreach (var n in home.Content.EmergencyNumbers)
             {
                 <span>@n.Label <a href="tel:@n.Number.Replace(" ", "")"><b>@n.Number</b></a></span>
             }
         </div>
-        <a class="more" href="/emergency">All numbers →</a>
+        <a class="more" href="/emergency">@T["All numbers"] →</a>
     </div>
 </div>
 <header class="phead">
     <div class="wrap">
         <a class="brand" href="/">
             <span class="brand-logo"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span>
-            <span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">by Sri Lanka Red Cross Society</span></span>
+            <span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">@T["by Sri Lanka Red Cross Society"]</span></span>
         </a>
         <nav class="pnav" aria-label="Web portal">
-            <a href="/" aria-current="@(page == "home" ? "page" : null)">Home</a>
-            <a href="/map" aria-current="@(page == "map" ? "page" : null)">Live map</a>
-            <a href="/alerts" aria-current="@(page == "alerts" ? "page" : null)">Alerts</a>
-            <a href="/find" aria-current="@(page == "find" ? "page" : null)">Find help &amp; places</a>
-            <a href="/topics" aria-current="@(page == "topics" ? "page" : null)">Safety topics</a>
-            <a href="/first-aid" aria-current="@(page == "firstaid" ? "page" : null)">First aid</a>
-            <a href="/emergency" aria-current="@(page == "emergency" ? "page" : null)">Emergency numbers</a>
-            <a href="/register" aria-current="@(page == "register" ? "page" : null)">For businesses</a>
-            <a href="/donate" aria-current="@(page == "donate" ? "page" : null)">Donate</a>
+            <a href="/" aria-current="@(page == "home" ? "page" : null)">@T["Home"]</a>
+            <a href="/map" aria-current="@(page == "map" ? "page" : null)">@T["Live map"]</a>
+            <a href="/alerts" aria-current="@(page == "alerts" ? "page" : null)">@T["Alerts"]</a>
+            <a href="/find" aria-current="@(page == "find" ? "page" : null)">@T["Find help & places"]</a>
+            <a href="/topics" aria-current="@(page == "topics" ? "page" : null)">@T["Safety topics"]</a>
+            <a href="/first-aid" aria-current="@(page == "firstaid" ? "page" : null)">@T["First aid"]</a>
+            <a href="/emergency" aria-current="@(page == "emergency" ? "page" : null)">@T["Emergency numbers"]</a>
+            <a href="/register" aria-current="@(page == "register" ? "page" : null)">@T["For businesses"]</a>
+            <a href="/donate" aria-current="@(page == "donate" ? "page" : null)">@T["Donate"]</a>
         </nav>
         <div class="pacts">
+            <select class="form-select lang" id="lang" aria-label="Language">
+                @foreach (var l in Texts.Languages)
+                {
+                    <option value="@l.Code" selected="@(T.Language == l.Code)">@l.Name</option>
+                }
+            </select>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 @if (staff) { <a class="btn btn-plain" href="/admin">Admin Portal</a> }
                 @if (User.IsInRole(Roles.Supplier)) { <a class="btn btn-plain" href="/supplier">My business</a> }
-                @if (User.IsInRole(Roles.Traveller)) { <a class="btn btn-plain acct" href="/account"><span class="avatar" aria-hidden="true">👤</span>My account</a> }
-                <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button class="btn btn-plain" type="submit">Sign out</button></form>
+                @if (User.IsInRole(Roles.Traveller)) { <a class="btn btn-plain acct" href="/account"><span class="avatar" aria-hidden="true">👤</span>@T["My account"]</a> }
+                <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button class="btn btn-plain" type="submit">@T["Sign out"]</button></form>
             }
             else
             {
-                <a class="btn btn-plain acct" href="/account/login"><span class="avatar" aria-hidden="true">👤</span>Sign in</a>
-                <a class="btn btn-danger" href="/register">List your business</a>
+                <a class="btn btn-plain acct" href="/account/login"><span class="avatar" aria-hidden="true">👤</span>@T["Sign in"]</a>
+                <a class="btn btn-danger" href="/register">@T["List your business"]</a>
             }
         </div>
     </div>
@@ -63,33 +69,34 @@
                 <p class="fnote">A free travel-safety service of the Sri Lanka Red Cross Society, for visitors and residents.</p>
             </div>
             <div class="col">
-                <span class="fhead">Menu</span>
-                <a href="/">Home</a>
-                <a href="/map">Live map</a>
-                <a href="/alerts">Alerts</a>
-                <a href="/find">Find help &amp; places</a>
-                <a href="/topics">Safety topics</a>
-                <a href="/first-aid">First aid</a>
-                <a href="/emergency">Emergency numbers</a>
-                <a href="/find?kind=business">Trusted businesses</a>
-                <a href="/donate">Donate</a>
+                <span class="fhead">@T["Menu"]</span>
+                <a href="/">@T["Home"]</a>
+                <a href="/map">@T["Live map"]</a>
+                <a href="/alerts">@T["Alerts"]</a>
+                <a href="/find">@T["Find help & places"]</a>
+                <a href="/topics">@T["Safety topics"]</a>
+                <a href="/first-aid">@T["First aid"]</a>
+                <a href="/emergency">@T["Emergency numbers"]</a>
+                <a href="/find?kind=business">@T["Trusted businesses"]</a>
+                <a href="/donate">@T["Donate"]</a>
             </div>
             <div class="col">
-                <span class="fhead">Emergency</span>
+                <span class="fhead">@T["Emergency"]</span>
                 @foreach (var n in home.Content.EmergencyNumbers)
                 {
                     <span class="fnum"><span>@n.Label</span><b class="num">@n.Number</b></span>
                 }
             </div>
             <div class="col">
-                <span class="fhead">For businesses</span>
-                <a class="btn btn-line" href="/register">List your business</a>
-                <a class="btn btn-line" href="/account/login">Sign in</a>
+                <span class="fhead">@T["For businesses"]</span>
+                <a class="btn btn-line" href="/register">@T["List your business"]</a>
+                <a class="btn btn-line" href="/partners">@T["Hotels & tour operators"]</a>
+                <a class="btn btn-line" href="/account/login">@T["Sign in"]</a>
             </div>
         </div>
         <div class="legal">
             <span>© @DateTime.UtcNow.Year Sri Lanka Red Cross Society</span>
-            <span>Developed by <b>Evokes Digital Worldwide</b></span>
+            <span>@T["Developed by"] <b>Evokes Digital Worldwide</b></span>
         </div>
     </div>
 </footer>

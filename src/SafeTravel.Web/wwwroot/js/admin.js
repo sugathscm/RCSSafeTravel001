@@ -161,6 +161,20 @@
     });
   };
 
+  // ----- partner enquiries from hotels and tour operators -----
+  screens.partners = function () {
+    var TYPES = { hotel: 'Hotel or resort', guesthouse: 'Guesthouse or villa', operator: 'Tour operator or DMC', school: 'Surf or dive school', other: 'Other' };
+    return ST.api('GET', 'admin/partner-enquiries').then(function (list) {
+      return head('Partner enquiries', 'Hotels and tour operators that asked to share Safe Travel with their guests. Contact each one, then mark it as handled.') +
+        panel('All enquiries', table(['Business', 'Contact', 'Guests a month', 'Message', 'Received', 'Handled'], list.map(function (p) {
+          return '<tr><td><b>' + e(p.businessName) + '</b><span class="small mute">' + e(TYPES[p.businessType] || p.businessType) + '</span></td>' +
+            '<td>' + e(p.contactName) + '<span class="small mute">' + e(p.email) + (p.phone ? ' · ' + e(p.phone) : '') + '</span></td>' +
+            '<td class="num">' + (p.guestsPerMonth == null ? '<span class="mute">Not given</span>' : Number(p.guestsPerMonth).toLocaleString()) + '</td><td class="small" style="max-width:320px">' + e(p.message) + '</td>' +
+            '<td class="small text-nowrap">' + ST.ago(p.createdUtc) + '</td><td>' + sw('partner', p.id, p.isHandled, '', can.suppliers) + '</td></tr>';
+        })), '<span class="small mute">' + list.filter(function (p) { return !p.isHandled; }).length + ' open</span>');
+    });
+  };
+
   // ----- reviews: travellers rate businesses, staff check each review before it is shown -----
   screens.reviews = function () {
     return ST.api('GET', 'admin/reviews').then(function (list) {
@@ -300,7 +314,7 @@
   };
 
   // ----- menu and routing: the page is kept in the address after #, so reload and back work -----
-  var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['reviews', '⭐', 'Reviews', true], ['categories', '🗂️', 'Categories', true],
+  var pages = [['dash', '📊', 'Dashboard', true], ['suppliers', '🏪', 'Suppliers', can.suppliersRead], ['partners', '🏨', 'Partner enquiries', can.suppliersRead], ['listings', '📍', 'Listings', can.suppliersRead], ['reviews', '⭐', 'Reviews', true], ['categories', '🗂️', 'Categories', true],
     ['content', '🖥️', 'Web Portal content', can.content], ['firstaid', '🩹', 'First aid guides', true], ['alerts', '🔔', 'Alerts', true], ['zones', '🗺️', 'Map zones', true], ['payments', '💳', 'Payments', can.finance], ['sponsors', '🤝', 'Sponsors', true],
     ['users', '👥', 'Users and roles', can.admin], ['system', '🔐', 'Security and API', true], ['audit', '🧾', 'Audit log', can.admin]].filter(function (p) { return p[3]; });
   var current = 'dash', pending = 0;
@@ -381,6 +395,7 @@
     category: function (id, on) { return ST.api('PUT', 'admin/categories/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     section: function (id, on) { return ST.api('PUT', 'admin/content/sections/' + id, { on: on }).done(function () { ST.toast('Home page updated'); }); },
     alert: function (id, on) { return ST.api('PUT', 'admin/alerts/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Alert is live' : 'Alert expired'); }); },
+    partner: function (id, on) { return ST.api('PUT', 'admin/partner-enquiries/' + id + '/handled', { on: on }).done(function () { ST.toast(on ? 'Marked as handled' : 'Marked as open'); }); },
     zone: function (id, on) { return ST.api('PUT', 'admin/risk-zones/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown on the map' : 'Hidden from the map'); }); },
     guide: function (id, on) { return ST.api('PUT', 'admin/first-aid/' + id + '/active', { on: on }).done(function () { ST.toast(on ? 'Shown to the public' : 'Hidden from the public'); }); },
     sponsor: function (id, on) { return ST.api('PUT', 'admin/sponsors/' + id + '/active', { on: on }).done(function () { ST.toast('Sponsors updated'); }); },

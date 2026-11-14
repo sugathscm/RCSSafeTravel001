@@ -33,13 +33,13 @@
         </div>
         <div class="agrid">
             <div class="gcard">
-                <h2>Family &amp; emergency contacts</h2>
+                <h2>@T["Family & emergency contacts"]</h2>
                 @foreach (var c in Model.Contacts)
                 {
                     <div class="arow">
                         <span class="avatar md" aria-hidden="true">@(c.Name.Length > 0 ? char.ToUpperInvariant(c.Name[0]).ToString() : "?")</span>
                         <span class="txt"><b>@c.Name</b><span>@(c.Relationship.Length > 0 ? c.Relationship : "Contact") · @c.Phone</span></span>
-                        <button type="button" class="linkbtn" data-del-contact="@c.Id">Remove</button>
+                        <button type="button" class="linkbtn" data-del-contact="@c.Id">@T["Remove"]</button>
                     </div>
                 }
                 @if (Model.Contacts.Count == 0) { <p class="small mute">No contacts yet. Add the people who should hear from you in an emergency.</p> }
@@ -47,18 +47,18 @@
                     <input class="form-control" name="name" placeholder="Name" required minlength="2" maxlength="120" aria-label="Name">
                     <input class="form-control" name="phone" placeholder="Phone, with country code" required maxlength="20" inputmode="tel" aria-label="Phone, with country code">
                     <input class="form-control" name="relationship" placeholder="Relationship (optional)" maxlength="60" aria-label="Relationship">
-                    <button class="btn btn-dark" type="submit">Save contact</button>
+                    <button class="btn btn-dark" type="submit">@T["Save contact"]</button>
                 </form>
             </div>
             <div class="vstack gap-3">
                 <div class="gcard">
-                    <h2>Trip plan</h2>
+                    <h2>@T["Trip plan"]</h2>
                     @foreach (var s in Model.Trip)
                     {
                         <div class="arow">
                             <span class="stopdot" aria-hidden="true"></span>
                             <span class="txt"><b>@s.Place</b><span>@(s.Date is DateOnly d ? d.ToString("d MMM yyyy") : "No date yet")@(s.Note.Length > 0 ? " · " + s.Note : "")</span></span>
-                            <button type="button" class="linkbtn" data-del-stop="@s.Id">Remove</button>
+                            <button type="button" class="linkbtn" data-del-stop="@s.Id">@T["Remove"]</button>
                         </div>
                     }
                     @if (Model.Trip.Count == 0) { <p class="small mute">No stops yet. Add where you are going so you can check the alerts for each place.</p> }
@@ -66,11 +66,11 @@
                         <input class="form-control" name="place" placeholder="Place, for example Ella" required minlength="2" maxlength="120" aria-label="Place">
                         <input class="form-control" name="date" type="date" aria-label="Date">
                         <input class="form-control" name="note" placeholder="Note (optional)" maxlength="200" aria-label="Note">
-                        <button class="btn btn-dark" type="submit">Add stop</button>
+                        <button class="btn btn-dark" type="submit">@T["Add stop"]</button>
                     </form>
                 </div>
                 <div class="gcard">
-                    <h2>My reviews</h2>
+                    <h2>@T["My reviews"]</h2>
                     @foreach (var r in Model.Reviews)
                     {
                         <a class="arow" href="/listing/@r.ListingId">

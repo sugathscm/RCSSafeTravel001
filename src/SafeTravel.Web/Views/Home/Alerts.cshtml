@@ -9,11 +9,11 @@
 <section class="phero">
     <div class="wrap mid sec-head mb-0">
         <div>
-            <span class="eyebrow">Alerts</span>
-            <h1 class="h2x">What is happening right now</h1>
+            <span class="eyebrow">@T["Alerts"]</span>
+            <h1 class="h2x">@T["What is happening right now"]</h1>
             <p class="lead">Warnings published by the alert desk, newest first. Follow the advice in each alert and check again before you travel.</p>
         </div>
-        <a class="btn btn-dark btn-lg" href="/map">Open the safety map →</a>
+        <a class="btn btn-dark btn-lg" href="/map">@T["Open the safety map"] →</a>
     </div>
 </section>
 <section class="sec">
@@ -30,7 +30,7 @@
                 </div>
                 @if (a.Latitude is double lat && a.Longitude is double lng)
                 {
-                    <a class="btn btn-plain" href="/map?lat=@lat.ToString(inv)&lng=@lng.ToString(inv)">Show on map</a>
+                    <a class="btn btn-plain" href="/map?lat=@lat.ToString(inv)&lng=@lng.ToString(inv)">@T["Show on map"]</a>
                 }
             </article>
         }
@@ -39,8 +39,8 @@
             <div class="empty">No active alerts right now. Check again before you travel.</div>
         }
         <div class="hrow mt-2">
-            <a class="btn btn-plain btn-lg" href="/emergency">Emergency numbers</a>
-            <a class="btn btn-plain btn-lg" href="/topics">Safety topics</a>
+            <a class="btn btn-plain btn-lg" href="/emergency">@T["Emergency numbers"]</a>
+            <a class="btn btn-plain btn-lg" href="/topics">@T["Safety topics"]</a>
         </div>
     </div>
 </section>
