@@ -16,14 +16,14 @@
             <div class="vstack gap-3">
                 <div class="hrow">
                     <span class="pill">@l.Icon @l.Category</span>
-                    @if (l.IsVerified) { <span class="pill ok">✓ Verified</span> }
+                    @if (l.IsVerified) { <span class="pill ok">✓ @T["Verified"]</span> }
                     @if (l.Rating > 0) { <span class="pill warn">★ @l.Rating.ToString("0.0") · @l.Reviews reviews</span> }
                 </div>
                 <h1 class="h2x mt-0">@l.Name</h1>
                 @if (promo is not null)
                 {
                     <div class="promo-box">
-                        <span class="promo-badge static">Promotion</span>
+                        <span class="promo-badge static">@T["Promotion"]</span>
                         <b>@promo.Title</b>
                         @if (promo.Text.Length > 0) { <span>@promo.Text</span> }
                         @if (promo.Until is DateOnly until) { <span class="small">Until @until.ToString("d MMM yyyy")</span> }
@@ -36,8 +36,8 @@
                     @if (l.Hours.Length > 0) { <dt>Hours</dt><dd>@l.Hours</dd> }
                 </dl>
                 <div class="hrow">
-                    @if (tel.Length > 0) { <a class="btn btn-dark" href="tel:@tel" data-track="call" data-id="@l.Id">📞 Call</a> }
-                    @if (hasMap) { <a class="btn btn-plain" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=@l.Latitude.ToString(inv),@l.Longitude.ToString(inv)" data-track="directions" data-id="@l.Id">🧭 Directions</a> }
+                    @if (tel.Length > 0) { <a class="btn btn-dark" href="tel:@tel" data-track="call" data-id="@l.Id">📞 @T["Call"]</a> }
+                    @if (hasMap) { <a class="btn btn-plain" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=@l.Latitude.ToString(inv),@l.Longitude.ToString(inv)" data-track="directions" data-id="@l.Id">🧭 @T["Directions"]</a> }
                 </div>
             </div>
             @if (hasMap) { <div class="map map-s" id="listing-map" role="application" aria-label="Map showing @l.Name"></div> }
@@ -45,7 +45,7 @@
 
         @if (Model.Products.Count > 0)
         {
-            <h2 class="lsub">Products and prices <span class="mute">(@Model.Products.Count)</span></h2>
+            <h2 class="lsub">@T["Products and prices"] <span class="mute">(@Model.Products.Count)</span></h2>
             <div class="pgrid">
                 @foreach (var p in Model.Products)
                 {
@@ -66,7 +66,7 @@
 
         @if (l.Kind == "business")
         {
-            <h2 class="lsub" id="reviews">Reviews <span class="mute">(@Model.Reviews.Count)</span></h2>
+            <h2 class="lsub" id="reviews">@T["Reviews"] <span class="mute">(@Model.Reviews.Count)</span></h2>
             <div class="rgrid">
                 <div class="rlist">
                     @foreach (var r in Model.Reviews)
@@ -82,24 +82,24 @@
                 @if (User.IsInRole(Roles.Traveller))
                 {
                     <form class="white-card rform" id="review-form" data-listing="@l.Id" novalidate>
-                        <h2>Write a review</h2>
+                        <h2>@T["Write a review"]</h2>
                         <div class="field"><label class="form-label" for="rv-stars">Your rating</label>
                             <select class="form-select" id="rv-stars" name="stars">
                                 <option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Fair</option><option value="2">★★ Poor</option><option value="1">★ Bad</option>
                             </select>
                         </div>
                         <div class="field"><label class="form-label" for="rv-text">What should other travellers know? (optional)</label><textarea class="form-control" id="rv-text" name="text" rows="3" maxlength="1000"></textarea></div>
-                        <button class="btn btn-dark" type="submit">Send review</button>
+                        <button class="btn btn-dark" type="submit">@T["Send review"]</button>
                         <span class="small mute">Reviews are checked by the team before they appear.</span>
                     </form>
                 }
                 else
                 {
                     <div class="white-card rform">
-                        <h2>Write a review</h2>
+                        <h2>@T["Write a review"]</h2>
                         <p>Sign in with a free traveller account to rate this place. Reviews are checked by the team before they appear.</p>
-                        <a class="btn btn-dark" href="/account/login?returnUrl=%2Flisting%2F@(l.Id)">Sign in</a>
-                        <a class="btn btn-plain" href="/join">Create a free account</a>
+                        <a class="btn btn-dark" href="/account/login?returnUrl=%2Flisting%2F@(l.Id)">@T["Sign in"]</a>
+                        <a class="btn btn-plain" href="/join">@T["Create a free account"]</a>
                     </div>
                 }
             </div>
@@ -107,12 +107,12 @@
 
         @if (Model.More.Count > 0)
         {
-            <h2 class="lsub">More from this business</h2>
+            <h2 class="lsub">@T["More from this business"]</h2>
             <div class="cards">
                 @foreach (var m in Model.More)
                 {
                     <a class="lcard @(m.Promotion is null ? "" : "has-promo")" href="/listing/@m.Id">
-                        @if (m.Promotion is not null) { <span class="promo-badge">Promotion</span> }
+                        @if (m.Promotion is not null) { <span class="promo-badge">@T["Promotion"]</span> }
                         <span class="ic">@m.Icon</span>
                         <h3>@m.Name</h3>
                         <span class="meta">@m.Category · @m.Town</span>

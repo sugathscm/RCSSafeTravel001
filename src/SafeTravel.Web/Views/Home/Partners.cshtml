@@ -1,0 +1,40 @@
+@{ Layout = "_Portal"; ViewData["Page"] = "partners"; ViewData["Title"] = "Hotels and tour operators"; }
+
+<section class="band-img blue">
+    <div class="wrap mid">
+        <span class="eyebrow">For hotels, tour operators &amp; DMCs</span>
+        <h1>@T["Give every guest a safer stay"]</h1>
+        <p>Share Safe Travel with your guests at check-in and with tour bookings. They get live alerts, the safety map, first aid guides and the emergency numbers for Sri Lanka.</p>
+    </div>
+</section>
+<section class="sec">
+    <div class="wrap mid reg-grid">
+        <div class="how">
+            <h2>@T["How it works"]</h2>
+            <div class="howstep blue"><span class="n">1</span><span><b>Tell us about your business</b><span>Send the form with your hotel, agency or tour company. It is free.</span></span></div>
+            <div class="howstep blue"><span class="n">2</span><span><b>We contact you</b><span>The Safe Travel team gets in touch about how to share Safe Travel with your guests.</span></span></div>
+            <div class="howstep blue"><span class="n">3</span><span><b>Guests travel safer</b><span>Your guests check alerts, the map and first aid advice during their stay.</span></span></div>
+            <a class="acard rose" href="/register"><span class="emoji">🏪</span><b>Want to be listed for travellers? List your business →</b></a>
+        </div>
+        <form class="form-card" id="partner-form" novalidate>
+            <h2>@T["Become a partner"]</h2>
+            <div class="grid2">
+                <div class="field"><label class="form-label" for="p-biz">Business name</label><input class="form-control" id="p-biz" name="businessName" required minlength="2" maxlength="160"></div>
+                <div class="field"><label class="form-label" for="p-type">Type of business</label>
+                    <select class="form-select" id="p-type" name="businessType">
+                        <option value="hotel">Hotel or resort</option><option value="guesthouse">Guesthouse or villa</option><option value="operator">Tour operator or DMC</option><option value="school">Surf or dive school</option><option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="field"><label class="form-label" for="p-name">Your name</label><input class="form-control" id="p-name" name="contactName" required minlength="2" maxlength="120" autocomplete="name"></div>
+                <div class="field"><label class="form-label" for="p-email">Work email</label><input class="form-control" id="p-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+                <div class="field"><label class="form-label" for="p-phone">Phone (optional)</label><input class="form-control" id="p-phone" name="phone" maxlength="20" inputmode="tel" autocomplete="tel"></div>
+                <div class="field"><label class="form-label" for="p-guests">Guests per month (optional)</label><input class="form-control num" id="p-guests" name="guestsPerMonth" type="number" min="0" max="1000000"></div>
+            </div>
+            <div class="field"><label class="form-label" for="p-msg">Anything we should know? (optional)</label><textarea class="form-control" id="p-msg" name="message" rows="3" maxlength="1000"></textarea></div>
+            <button class="btn btn-dark btn-lg" type="submit">@T["Send"]</button>
+            <span class="small mute">We use these details only to contact you about Safe Travel.</span>
+        </form>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

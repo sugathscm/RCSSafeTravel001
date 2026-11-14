@@ -606,6 +606,63 @@ namespace SafeTravel.Web.Data.Migrations
                     b.ToTable("Listings");
                 });
 
+            modelBuilder.Entity("SafeTravel.Core.Entities.PartnerEnquiry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BusinessName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("BusinessType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("GuestsPerMonth")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("HandledUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsHandled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsHandled", "CreatedUtc");
+
+                    b.ToTable("PartnerEnquiries");
+                });
+
             modelBuilder.Entity("SafeTravel.Core.Entities.Payment", b =>
                 {
                     b.Property<int>("Id")

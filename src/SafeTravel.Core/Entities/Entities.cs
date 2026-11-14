@@ -359,3 +359,20 @@ public class Review
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DecidedUtc { get; set; }
 }
+
+/// <summary>A hotel, guesthouse or tour operator that asked to share Safe Travel with its guests.</summary>
+public class PartnerEnquiry
+{
+    public int Id { get; set; }
+    [MaxLength(160)] public string BusinessName { get; set; } = "";
+    /// <summary>hotel, guesthouse, operator, school or other.</summary>
+    [MaxLength(20)] public string BusinessType { get; set; } = "hotel";
+    [MaxLength(120)] public string ContactName { get; set; } = "";
+    [MaxLength(200)] public string Email { get; set; } = "";
+    [MaxLength(30)] public string Phone { get; set; } = "";
+    public int? GuestsPerMonth { get; set; }
+    [MaxLength(1000)] public string Message { get; set; } = "";
+    public bool IsHandled { get; set; }
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTime? HandledUtc { get; set; }
+}

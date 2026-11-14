@@ -8,13 +8,16 @@
   --red:#e3262f; --red-d:#c41f28; --red-soft:#fde3e3; --ok:#24703c; --ok-d:#1d5c31; --ok-soft:#e2f1e5;
   --warn:#9a6200; --warn-soft:#f8ecd6; --info:#2f5fb0; --info-soft:#e4ecf8;
   --t-blue:#e4ecf8; --t-teal:#ddf0ef; --t-green:#e2f1e5; --t-rose:#fde3e3; --t-sand:#f8ecd6; --t-olive:#e8eedb;
-  --display:'Bricolage Grotesque','Arial Narrow',system-ui,sans-serif; --body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --display:'Bricolage Grotesque','Noto Sans Sinhala','Noto Sans Tamil','Nirmala UI','Arial Narrow',system-ui,sans-serif; --body:'Public Sans','Noto Sans Sinhala','Noto Sans Tamil','Nirmala UI',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
   --r:26px; --r-s:16px;
   --gut:max(clamp(16px,4vw,32px), env(safe-area-inset-left, 0px)); --gut-r:max(clamp(16px,4vw,32px), env(safe-area-inset-right, 0px));
   --bs-body-bg:var(--bg); --bs-body-color:var(--ink); --bs-body-font-family:var(--body); --bs-body-font-size:15px; --bs-border-color:var(--line);
   --bs-link-color-rgb:196,31,40; --bs-link-hover-color-rgb:143,20,27; --bs-border-radius:14px;
 }
 body{-webkit-font-smoothing:antialiased}
+/* Sinhala and Tamil need room: no tight tracking and taller lines in headings. */
+html[lang="si"] :is(h1,h2,h3,h4,.brand-name),html[lang="ta"] :is(h1,h2,h3,h4,.brand-name){letter-spacing:0!important;line-height:1.3!important}
+html[lang="si"] .hero h1,html[lang="ta"] .hero h1{font-size:clamp(34px,4.6vw,60px)}
 h1,h2,h3,h4{font-family:var(--display);letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance}
 p{margin:0}
 :focus-visible{outline:3px solid var(--info);outline-offset:2px}
@@ -110,6 +113,7 @@ textarea.form-control{padding:12px 14px;line-height:1.5}
 .pacts .btn{min-height:40px;--bs-btn-border-radius:12px;--bs-btn-padding-x:16px}
 .pacts .btn-plain{--bs-btn-font-size:13px;--bs-btn-font-weight:600;--bs-btn-padding-x:12px}
 .pacts .acct{padding-left:6px}
+.pacts .lang{min-height:40px;height:40px;width:auto;border-radius:12px;background-color:#fff;font-size:13px;font-weight:600;padding:0 34px 0 10px}
 .avatar{width:28px;height:28px;border-radius:50%;background:#ece6f7;display:grid;place-items:center;font-size:13px;flex:none}
 
 .pfoot{background:var(--ink);color:#fff}
@@ -256,6 +260,8 @@ a.big:hover{transform:translateY(-3px);color:var(--ink)}
 .band-red{background:var(--red);color:#fff}
 .band-img{position:relative;color:#fff;overflow:hidden;background:#12301e url(../img/hero-sigiriya.jpg) center/cover}
 .band-img::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,36,22,.92),rgba(14,36,22,.5))}
+.band-img.blue::before{background:linear-gradient(90deg,rgba(12,30,40,.9),rgba(12,30,40,.45))}
+.howstep.blue .n{background:var(--info-soft);color:var(--info)}
 .band-red .wrap,.band-img .wrap{position:relative;display:flex;flex-direction:column;gap:18px;align-items:flex-start;padding-block:72px}
 .band-red .eyebrow,.band-img .eyebrow{color:rgba(255,255,255,.85)}
 .band-red h1,.band-img h1{font-size:clamp(40px,5.5vw,72px);font-weight:800;letter-spacing:-.045em;line-height:.98;max-width:880px}

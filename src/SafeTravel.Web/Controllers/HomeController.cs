@@ -67,6 +67,19 @@ public class HomeController(PortalData portal) : Controller
         return View(new EmergencyPage(home.Content.EmergencyNumbers, hospitals));
     }
 
+    /// <summary>Hotels and tour operators ask to share Safe Travel with their guests.</summary>
+    [HttpGet("/partners")]
+    public IActionResult Partners() => View();
+
+    /// <summary>Remembers the visitor's language in a cookie, then returns to the page they were on.</summary>
+    [HttpGet("/language/{code}")]
+    public IActionResult Language(string code, string? returnUrl = null)
+    {
+        if (Texts.IsKnown(code))
+            Response.Cookies.Append(Texts.CookieName, code, new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), HttpOnly = true, IsEssential = true, SameSite = SameSiteMode.Lax, Secure = Request.IsHttps });
+        return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : "/");
+    }
+
     /// <summary>Sign-up for a free traveller account.</summary>
     [HttpGet("/join")]
     public IActionResult Join() => View();

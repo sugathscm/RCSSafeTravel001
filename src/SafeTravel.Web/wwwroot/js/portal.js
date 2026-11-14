@@ -213,6 +213,17 @@
     });
   });
 
+  // ----- hotels and tour operators ask to become partners -----
+  $('#partner-form').on('submit', function (ev) {
+    ev.preventDefault();
+    if (!this.checkValidity()) { this.reportValidity(); return; }
+    var form = this;
+    ST.busy(form, ST.api('POST', 'partner-enquiries', ST.form(form))).done(function () {
+      form.reset();
+      ST.modal('<h3>Thank you</h3><p>The Safe Travel team will contact you about sharing Safe Travel with your guests.</p><div class="hrow"><span class="sp"></span><button type="button" class="btn btn-dark" data-close>Close</button></div>');
+    });
+  });
+
   // ----- register a business -----
   $('#register-form').on('submit', function (ev) {
     ev.preventDefault();

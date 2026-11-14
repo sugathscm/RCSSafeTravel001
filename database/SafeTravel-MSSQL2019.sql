@@ -923,3 +923,45 @@ END;
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114040820_PartnerEnquiries'
+)
+BEGIN
+    CREATE TABLE [PartnerEnquiries] (
+        [Id] int NOT NULL IDENTITY,
+        [BusinessName] nvarchar(160) NOT NULL,
+        [BusinessType] nvarchar(20) NOT NULL,
+        [ContactName] nvarchar(120) NOT NULL,
+        [Email] nvarchar(200) NOT NULL,
+        [Phone] nvarchar(30) NOT NULL,
+        [GuestsPerMonth] int NULL,
+        [Message] nvarchar(1000) NOT NULL,
+        [IsHandled] bit NOT NULL,
+        [CreatedUtc] datetime2 NOT NULL,
+        [HandledUtc] datetime2 NULL,
+        CONSTRAINT [PK_PartnerEnquiries] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114040820_PartnerEnquiries'
+)
+BEGIN
+    CREATE INDEX [IX_PartnerEnquiries_IsHandled_CreatedUtc] ON [PartnerEnquiries] ([IsHandled], [CreatedUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114040820_PartnerEnquiries'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20261114040820_PartnerEnquiries', N'10.0.15');
+END;
+
+COMMIT;
+GO
+

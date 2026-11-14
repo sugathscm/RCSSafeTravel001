@@ -3,8 +3,8 @@
 
 <section class="phero">
     <div class="wrap">
-        <span class="eyebrow">Safety topics</span>
-        <h1 class="h2x">Everything you need to know, in plain words</h1>
+        <span class="eyebrow">@T["Safety topics"]</span>
+        <h1 class="h2x">@T["Everything you need to know, in plain words"]</h1>
         <p class="lead">Short, practical advice for travelling in Sri Lanka. Each topic lists what to do and what to avoid.</p>
     </div>
 </section>
@@ -13,7 +13,7 @@
         <div class="cards tall mt-3">
             @foreach (var t in Model.Content.Topics)
             {
-                <a class="tcard tone-@t.Tone" href="/topics/@t.Id"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p><span class="go">Read →</span></a>
+                <a class="tcard tone-@t.Tone" href="/topics/@t.Id"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p><span class="go">@T["Read"] →</span></a>
             }
             @if (Model.Content.Topics.Count == 0) { <div class="empty">No topics have been published yet.</div> }
         </div>

@@ -8,8 +8,8 @@
 <section class="phero">
     <div class="wrap mid sec-head mb-0">
         <div>
-            <span class="eyebrow">First aid</span>
-            <h1 class="h2x">What to do until help arrives</h1>
+            <span class="eyebrow">@T["First aid"]</span>
+            <h1 class="h2x">@T["What to do until help arrives"]</h1>
             <p class="lead">Step-by-step guides. If someone is badly hurt, call for help first.</p>
         </div>
         @if (ambulance is not null)
@@ -43,8 +43,8 @@
                     <div class="gstep"><span class="n">@(i + 1)</span><span>@g.Steps[i]</span></div>
                 }
                 <div class="hrow mt-2">
-                    <a class="btn btn-plain" href="/emergency">All emergency numbers</a>
-                    <a class="btn btn-dark" href="/find?kind=help&category=hospital">Find a hospital</a>
+                    <a class="btn btn-plain" href="/emergency">@T["All emergency numbers"]</a>
+                    <a class="btn btn-dark" href="/find?kind=help&category=hospital">@T["Find a hospital"]</a>
                 </div>
             </div>
         }

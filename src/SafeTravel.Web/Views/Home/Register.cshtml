@@ -3,8 +3,8 @@
 
 <section class="band-img">
     <div class="wrap narrow">
-        <span class="eyebrow">For local businesses</span>
-        <h1>Register your business</h1>
+        <span class="eyebrow">@T["For local businesses"]</span>
+        <h1>@T["Register your business"]</h1>
         <p>Tell us about your business. The admin team checks your documents, then you pay LKR @Model.Content.AnnualFee.ToString("N0") a year and go live on the map and in the app.</p>
         <span class="wpill">LKR @Model.Content.AnnualFee.ToString("N0") a year</span>
     </div>
@@ -12,13 +12,13 @@
 <section class="sec">
     <div class="wrap narrow reg-grid">
         <div class="how">
-            <h2>How it works</h2>
+            <h2>@T["How it works"]</h2>
             <div class="howstep"><span class="n">1</span><span><b>Register</b><span>Tell us about your business.</span></span></div>
             <div class="howstep"><span class="n">2</span><span><b>Document check</b><span>Upload your documents. The admin team checks them.</span></span></div>
             <div class="howstep"><span class="n">3</span><span><b>Pay and go live</b><span>Pay LKR @Model.Content.AnnualFee.ToString("N0") a year and go live on the map and in the app.</span></span></div>
         </div>
         <form class="form-card" id="register-form" novalidate>
-                <h2>Add your business</h2>
+                <h2>@T["Add your business"]</h2>
                 <div class="grid2">
                     <div class="field"><label class="form-label" for="r-biz">Business name</label><input class="form-control" id="r-biz" name="businessName" required maxlength="160"></div>
                     <div class="field"><label class="form-label" for="r-cat">Category</label>
@@ -45,8 +45,8 @@
                 </div>
                 <div class="field"><label class="form-label" for="r-hours">Opening hours</label><input class="form-control" id="r-hours" name="hours" maxlength="160" placeholder="Daily 9:00 to 18:00"></div>
                 <div class="field"><label class="form-label" for="r-desc">Short description</label><textarea class="form-control" id="r-desc" name="description" rows="2" maxlength="1000"></textarea></div>
-                <button class="btn btn-dark btn-lg" type="submit">Send registration</button>
-                <div class="hrow"><a class="btn btn-plain" href="/">Cancel</a><span class="small mute">Already registered? <a href="/account/login">Sign in</a></span></div>
+                <button class="btn btn-dark btn-lg" type="submit">@T["Send registration"]</button>
+                <div class="hrow"><a class="btn btn-plain" href="/">@T["Cancel"]</a><span class="small mute">Already registered? <a href="/account/login">@T["Sign in"]</a></span></div>
         </form>
     </div>
 </section>

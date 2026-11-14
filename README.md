@@ -84,6 +84,20 @@ Under each listing a supplier can add products: rooms, dishes, tours, rentals (S
 
 Every live listing has its own page at `/listing/{id}`: details, map, promotion, all products with prices and pictures, and the supplier's other listings. Tiles on the home page and the directory open this page. The directory itself (`/find`) loads 24 tiles at a time with a **Show more** button.
 
+## Languages
+
+The header has a language selector: English, Sinhala and Tamil. The choice is kept in a cookie (`lang`).
+
+- The views hold the English text and look it up with `@T["English text"]`. The translations are in `src/SafeTravel.Web/Resources/texts.si.json` and `texts.ta.json`, one English text per key. A text with no translation is shown in English.
+- Translated in this version: the top bar, menu and footer, and the headings and main buttons of the public pages. Form labels, longer paragraphs, messages drawn by the scripts and the admin portals are still in English.
+- Content that staff type in (alerts, topics, first aid guides, listings) is shown as typed. It is not translated.
+- **The Sinhala and Tamil text has not been checked by a native speaker.** Have it reviewed before launch. To correct a text, edit its line in the JSON file; to translate another text, wrap it in `@T["..."]` in the view and add the same English text as a key.
+- To add a language, add it to `Texts.Languages` and add a `texts.<code>.json` file.
+
+## Hotels and tour operators
+
+`/partners` explains how a hotel, guesthouse or tour operator can share Safe Travel with its guests, with an enquiry form. Enquiries appear in the Admin Portal under **Partner enquiries**; supplier managers mark each one as handled. No partner tiers or prices are shown, because those commercial terms are not decided.
+
 ## Traveller accounts and reviews
 
 - **Sign-up** (`/join`): a free traveller account. The same email and password work in the app.
@@ -143,6 +157,7 @@ Open `/openapi/v1.json` in Development for the full list. The main calls:
 | `GET /api/v1/categories` | Categories that are switched on |
 | `GET /api/v1/listings?kind=&category=&district=&q=&lat=&lng=&radiusKm=` | Help points and businesses, nearest first when a position is sent |
 | `GET /api/v1/alerts` | Active alerts |
+| `POST /api/v1/partner-enquiries` | A hotel or tour operator asks to share Safe Travel with its guests |
 | `GET /api/v1/listings/{id}/reviews` | Approved traveller reviews of a listing |
 | `GET /api/v1/me` | The signed-in traveller: contacts, trip plan, own reviews |
 | `POST` and `DELETE /api/v1/me/contacts`, `/api/v1/me/trip` | Add or remove an emergency contact or a trip stop |

@@ -100,11 +100,14 @@ builder.Services.AddAntiforgery(o => { o.HeaderName = "X-CSRF-TOKEN"; o.Cookie.N
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+// Pages carry Sinhala and Tamil text. Send those letters as they are, not as numeric character codes.
+builder.Services.Configure<Microsoft.Extensions.WebEncoders.WebEncoderOptions>(o =>
+    o.TextEncoderSettings = new System.Text.Encodings.Web.TextEncoderSettings(System.Text.Unicode.UnicodeRanges.All));
 builder.Services.AddSingleton<IClock, SystemClock>();
 builder.Services.AddSingleton<INotificationSender, LogNotificationSender>();
 builder.Services.AddSingleton<IPaymentGateway, SandboxPaymentGateway>();
 builder.Services.AddScoped<AuditService>().AddScoped<SettingsService>().AddScoped<ListingService>().AddScoped<ProductService>().AddScoped<SupplierService>()
-    .AddScoped<ContentService>().AddScoped<SafetyContentService>().AddScoped<MapService>().AddScoped<TravellerService>().AddScoped<ReviewService>().AddScoped<AlertService>().AddScoped<PaymentService>().AddScoped<DashboardService>()
+    .AddScoped<ContentService>().AddScoped<SafetyContentService>().AddScoped<MapService>().AddScoped<TravellerService>().AddScoped<PartnerService>().AddSingleton<Texts>().AddScoped<ReviewService>().AddScoped<AlertService>().AddScoped<PaymentService>().AddScoped<DashboardService>()
     .AddScoped<TokenService>().AddScoped<SafeTravel.Web.Api.SignInChecker>().AddScoped<Seeder>().AddScoped<PortalData>().AddSingleton<UploadStore>().AddScoped<ApiAntiforgeryFilter>();
 builder.Services.AddHostedService<RenewalWorker>();
 

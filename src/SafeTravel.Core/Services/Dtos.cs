@@ -96,6 +96,19 @@ public class RiskZoneInput
     public bool IsActive { get; set; } = true;
 }
 
+public record PartnerEnquiryDto(int Id, string BusinessName, string BusinessType, string ContactName, string Email, string Phone, int? GuestsPerMonth, string Message, bool IsHandled, DateTime CreatedUtc);
+
+public class PartnerEnquiryInput
+{
+    [Required, StringLength(160, MinimumLength = 2)] public string BusinessName { get; set; } = "";
+    [Required, RegularExpression("hotel|guesthouse|operator|school|other")] public string BusinessType { get; set; } = "hotel";
+    [Required, StringLength(120, MinimumLength = 2)] public string ContactName { get; set; } = "";
+    [Required, EmailAddress, StringLength(200)] public string Email { get; set; } = "";
+    [RegularExpression(@"^\+?[0-9 ]{7,20}$", ErrorMessage = "Enter a phone number, for example 077 123 4567.")] public string? Phone { get; set; }
+    [Range(0, 1_000_000)] public int? GuestsPerMonth { get; set; }
+    [StringLength(1000)] public string? Message { get; set; }
+}
+
 public record ContactDto(int Id, string Name, string Phone, string Relationship);
 
 public class ContactInput
