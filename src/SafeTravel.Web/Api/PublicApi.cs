@@ -36,6 +36,10 @@ public class PublicApi(ContentService content, ListingService listings, AlertSer
     [HttpGet("listings/{id:int}/products"), OutputCache(PolicyName = "listings")]
     public Task<IReadOnlyList<ProductDto>> Products(int id, [FromServices] ProductService products, CancellationToken ct) => products.PublicAsync(id, ct);
 
+    /// <summary>The approved traveller reviews of a listing, newest first.</summary>
+    [HttpGet("listings/{id:int}/reviews"), OutputCache(PolicyName = "listings")]
+    public Task<IReadOnlyList<ReviewDto>> Reviews(int id, [FromServices] ReviewService reviews, CancellationToken ct) => reviews.ForListingAsync(id, ct);
+
     [HttpGet("products/{id:int}/image"), ResponseCache(Duration = 86400)]
     public async Task<IActionResult> ProductImage(int id, [FromServices] ProductService products, [FromServices] UploadStore uploads, CancellationToken ct)
     {

@@ -96,6 +96,37 @@ public class RiskZoneInput
     public bool IsActive { get; set; } = true;
 }
 
+public record ContactDto(int Id, string Name, string Phone, string Relationship);
+
+public class ContactInput
+{
+    [Required, StringLength(120, MinimumLength = 2)] public string Name { get; set; } = "";
+    [Required, RegularExpression(@"^\+?[0-9 ]{7,20}$", ErrorMessage = "Enter a phone number with its country code, for example +44 7700 900123.")] public string Phone { get; set; } = "";
+    [StringLength(60)] public string? Relationship { get; set; }
+}
+
+public record TripStopDto(int Id, string Place, DateOnly? Date, string Note);
+
+public class TripStopInput
+{
+    [Required, StringLength(120, MinimumLength = 2)] public string Place { get; set; } = "";
+    public DateOnly? Date { get; set; }
+    [StringLength(200)] public string? Note { get; set; }
+}
+
+/// <summary>A review of a business. Status is pending, approved or rejected.</summary>
+public record ReviewDto(int Id, int ListingId, string ListingName, string AuthorName, int Stars, string Text, string Status, DateTime CreatedUtc);
+
+public class ReviewInput
+{
+    [Range(1, int.MaxValue)] public int ListingId { get; set; }
+    [Range(1, 5)] public int Stars { get; set; }
+    [StringLength(1000)] public string? Text { get; set; }
+}
+
+/// <summary>Everything on the traveller's account page.</summary>
+public record AccountDto(string FullName, string Email, IReadOnlyList<ContactDto> Contacts, IReadOnlyList<TripStopDto> Trip, IReadOnlyList<ReviewDto> Reviews, bool CheckInEnabled);
+
 public class AlertInput
 {
     [Required, RegularExpression("red|amber|blue")] public string Level { get; set; } = "amber";

@@ -56,6 +56,7 @@ The password for every sample account is the value of `Seed:StaffPassword` in `a
 | Supplier manager | suppliers@safetravel.local |
 | Finance officer | finance@safetravel.local |
 | Call centre agent | agent1@safetravel.local |
+| Traveller, with contacts, a trip plan and reviews | emma@traveller.example |
 | Supplier, live listing | owner@ellaridge.example |
 | Supplier, approved and waiting to pay | bookings@saferides.example |
 | Supplier, fee lapsed | ruwan@coastscooters.example |
@@ -82,6 +83,13 @@ Under each listing a supplier can add products: rooms, dishes, tours, rentals (S
 ## Listing pages
 
 Every live listing has its own page at `/listing/{id}`: details, map, promotion, all products with prices and pictures, and the supplier's other listings. Tiles on the home page and the directory open this page. The directory itself (`/find`) loads 24 tiles at a time with a **Show more** button.
+
+## Traveller accounts and reviews
+
+- **Sign-up** (`/join`): a free traveller account. The same email and password work in the app.
+- **My account** (`/account`): up to 5 family and emergency contacts and a trip plan of up to 20 stops. A traveller sees and changes only their own data.
+- **Reviews**: a signed-in traveller rates a business from 1 to 5 stars on its listing page, one review per business. The review waits under **Reviews** in the Admin Portal; content staff approve or reject it. Only an approved review is shown and counted in the listing's rating. Deleting an approved review takes it back out of the rating. The name shown is the first name and last initial.
+- **"I'm safe" check-ins** are built but switched off. They send a message to every contact through `INotificationSender`, which today only writes to the log. Connect a real SMS service, then set `Features:SafeCheckIn` to `true`.
 
 ## Safety map and alerts
 
@@ -135,6 +143,11 @@ Open `/openapi/v1.json` in Development for the full list. The main calls:
 | `GET /api/v1/categories` | Categories that are switched on |
 | `GET /api/v1/listings?kind=&category=&district=&q=&lat=&lng=&radiusKm=` | Help points and businesses, nearest first when a position is sent |
 | `GET /api/v1/alerts` | Active alerts |
+| `GET /api/v1/listings/{id}/reviews` | Approved traveller reviews of a listing |
+| `GET /api/v1/me` | The signed-in traveller: contacts, trip plan, own reviews |
+| `POST` and `DELETE /api/v1/me/contacts`, `/api/v1/me/trip` | Add or remove an emergency contact or a trip stop |
+| `POST /api/v1/me/reviews` | Send a review of a business for staff to check |
+| `POST /api/v1/me/check-in` | "I'm safe" message to every contact. Off until `Features:SafeCheckIn` is `true` |
 | `GET /api/v1/risk-zones` | Risk zones for the safety map: type, name, advice, position and radius |
 | `GET /api/v1/topics` and `GET /api/v1/topics/{id}` | Safety topics with their do and avoid lists |
 | `GET /api/v1/first-aid` | First aid guides: steps in order and the video player address |
@@ -173,5 +186,5 @@ To run on more than one server, move the output cache and data-protection keys t
 | `Seed:StaffPassword` | Set once to create the first super admin (`admin@safetravel.local`), then remove it and change the password |
 | `Seed:SampleData` | Leave `false` |
 | Payment gateway | `SandboxPaymentGateway` approves every payment. Replace it with the real gateway behind `IPaymentGateway` |
-| Email and SMS | `LogNotificationSender` only writes to the log. Replace it behind `INotificationSender` |
+| Email and SMS | `LogNotificationSender` only writes to the log. Replace it behind `INotificationSender`, then set `Features:SafeCheckIn` to `true` for "I'm safe" check-ins |
 | Emergency numbers, annual fee | Sample values. Confirm them in the Admin Portal |

@@ -1,0 +1,88 @@
+@model AccountDto
+@{
+    Layout = "_Portal"; ViewData["Page"] = "account"; ViewData["Title"] = "My account";
+    var initials = string.Concat(Model.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
+    string Pill(string status) => status == "approved" ? "ok" : status == "rejected" ? "bad" : "warn";
+    string StatusText(string status) => status == "approved" ? "Shown" : status == "rejected" ? "Not shown" : "Being checked";
+}
+
+<section class="sec" id="account">
+    <div class="wrap mid vstack gap-4">
+        <div class="ahead">
+            <div class="who">
+                <span class="avatar xl" aria-hidden="true">@initials</span>
+                <div>
+                    <h1>@Model.FullName</h1>
+                    <span class="small mute">Free account · @Model.Email</span>
+                </div>
+            </div>
+            @if (Model.CheckInEnabled)
+            {
+                <button type="button" class="safe" id="checkin">
+                    <span class="emoji" aria-hidden="true">💚</span>
+                    <span><b>Tell family I'm safe</b><span>Sends a check-in to @Model.Contacts.Count contacts</span></span>
+                </button>
+            }
+            else
+            {
+                <div class="safe off">
+                    <span class="emoji" aria-hidden="true">💚</span>
+                    <span><b>"I'm safe" check-ins</b><span>Not switched on yet. They start when the SMS service is connected.</span></span>
+                </div>
+            }
+        </div>
+        <div class="agrid">
+            <div class="gcard">
+                <h2>Family &amp; emergency contacts</h2>
+                @foreach (var c in Model.Contacts)
+                {
+                    <div class="arow">
+                        <span class="avatar md" aria-hidden="true">@(c.Name.Length > 0 ? char.ToUpperInvariant(c.Name[0]).ToString() : "?")</span>
+                        <span class="txt"><b>@c.Name</b><span>@(c.Relationship.Length > 0 ? c.Relationship : "Contact") · @c.Phone</span></span>
+                        <button type="button" class="linkbtn" data-del-contact="@c.Id">Remove</button>
+                    </div>
+                }
+                @if (Model.Contacts.Count == 0) { <p class="small mute">No contacts yet. Add the people who should hear from you in an emergency.</p> }
+                <form class="vstack gap-2 pt-2" id="contact-form" novalidate>
+                    <input class="form-control" name="name" placeholder="Name" required minlength="2" maxlength="120" aria-label="Name">
+                    <input class="form-control" name="phone" placeholder="Phone, with country code" required maxlength="20" inputmode="tel" aria-label="Phone, with country code">
+                    <input class="form-control" name="relationship" placeholder="Relationship (optional)" maxlength="60" aria-label="Relationship">
+                    <button class="btn btn-dark" type="submit">Save contact</button>
+                </form>
+            </div>
+            <div class="vstack gap-3">
+                <div class="gcard">
+                    <h2>Trip plan</h2>
+                    @foreach (var s in Model.Trip)
+                    {
+                        <div class="arow">
+                            <span class="stopdot" aria-hidden="true"></span>
+                            <span class="txt"><b>@s.Place</b><span>@(s.Date is DateOnly d ? d.ToString("d MMM yyyy") : "No date yet")@(s.Note.Length > 0 ? " · " + s.Note : "")</span></span>
+                            <button type="button" class="linkbtn" data-del-stop="@s.Id">Remove</button>
+                        </div>
+                    }
+                    @if (Model.Trip.Count == 0) { <p class="small mute">No stops yet. Add where you are going so you can check the alerts for each place.</p> }
+                    <form class="vstack gap-2 pt-2" id="trip-form" novalidate>
+                        <input class="form-control" name="place" placeholder="Place, for example Ella" required minlength="2" maxlength="120" aria-label="Place">
+                        <input class="form-control" name="date" type="date" aria-label="Date">
+                        <input class="form-control" name="note" placeholder="Note (optional)" maxlength="200" aria-label="Note">
+                        <button class="btn btn-dark" type="submit">Add stop</button>
+                    </form>
+                </div>
+                <div class="gcard">
+                    <h2>My reviews</h2>
+                    @foreach (var r in Model.Reviews)
+                    {
+                        <a class="arow" href="/listing/@r.ListingId">
+                            <span class="txt"><b>@r.ListingName</b><span>@(new string('★', r.Stars)) · @r.CreatedUtc.ToString("d MMM yyyy")</span></span>
+                            <span class="pill @Pill(r.Status)">@StatusText(r.Status)</span>
+                        </a>
+                    }
+                    @if (Model.Reviews.Count == 0) { <p class="small mute">No reviews yet. Open a business page to rate a place you visited.</p> }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts { <script src="~/js/portal.js" asp-append-version="true"></script> }

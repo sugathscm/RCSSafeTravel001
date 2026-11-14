@@ -180,6 +180,39 @@
     });
   }
 
+  // ----- traveller: sign-up, account page and reviews -----
+  $('#join-form').on('submit', function (ev) {
+    ev.preventDefault();
+    if (!this.checkValidity()) { this.reportValidity(); return; }
+    ST.busy(this, ST.api('POST', 'auth/register', ST.form(this))).done(function () {
+      ST.modal('<h3>Your account is ready</h3><p>Sign in with your email and password to add your family contacts and trip plan.</p>' +
+        '<div class="hrow"><span class="sp"></span><a class="btn btn-danger" href="/account/login?returnUrl=%2Faccount">Sign in</a></div>');
+    });
+  });
+  var $acct = $('#account');
+  if ($acct.length) {
+    var reload = function () { location.reload(); };
+    $('#contact-form, #trip-form').on('submit', function (ev) {
+      ev.preventDefault();
+      if (!this.checkValidity()) { this.reportValidity(); return; }
+      ST.busy(this, ST.api('POST', this.id === 'contact-form' ? 'me/contacts' : 'me/trip', ST.form(this))).done(reload);
+    });
+    $acct.on('click', '[data-del-contact]', function () { ST.api('DELETE', 'me/contacts/' + this.dataset.delContact).done(reload); });
+    $acct.on('click', '[data-del-stop]', function () { ST.api('DELETE', 'me/trip/' + this.dataset.delStop).done(reload); });
+    $('#checkin').on('click', function () {
+      ST.api('POST', 'me/check-in').done(function (r) { ST.toast('Sent "I\'m safe" to ' + r.sent + (r.sent === 1 ? ' contact' : ' contacts')); });
+    });
+  }
+  $('#review-form').on('submit', function (ev) {
+    ev.preventDefault();
+    var form = this, d = ST.form(form);
+    d.listingId = Number(form.dataset.listing); d.stars = Number(d.stars);
+    ST.busy(form, ST.api('POST', 'me/reviews', d)).done(function () {
+      form.reset();
+      ST.modal('<h3>Thank you</h3><p>Your review will appear here once the team has checked it.</p><div class="hrow"><span class="sp"></span><button type="button" class="btn btn-dark" data-close>Close</button></div>');
+    });
+  });
+
   // ----- register a business -----
   $('#register-form').on('submit', function (ev) {
     ev.preventDefault();

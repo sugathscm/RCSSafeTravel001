@@ -11,12 +11,12 @@ public class HomeController(PortalData portal) : Controller
     /// <summary>One listing on its own page: details, promotion, every product with its price, and the supplier's other listings.</summary>
     [HttpGet("/listing/{id:int}")]
     public async Task<IActionResult> Listing(int id, [FromServices] SafeTravel.Core.Services.ListingService listings,
-        [FromServices] SafeTravel.Core.Services.ProductService products, CancellationToken ct)
+        [FromServices] SafeTravel.Core.Services.ProductService products, [FromServices] SafeTravel.Core.Services.ReviewService reviews, CancellationToken ct)
     {
         SafeTravel.Core.Services.ListingDto listing;
         try { listing = await listings.GetPublicAsync(id, ct); }
         catch (SafeTravel.Core.Services.RuleException) { Response.StatusCode = 404; return View("NotFound"); }
-        return View(new ListingPage(listing, await products.PublicAsync(id, ct), await listings.MoreFromSupplierAsync(listing.SupplierId, id, ct)));
+        return View(new ListingPage(listing, await products.PublicAsync(id, ct), await listings.MoreFromSupplierAsync(listing.SupplierId, id, ct), await reviews.ForListingAsync(id, ct)));
     }
 
     [HttpGet("/")]
@@ -66,6 +66,10 @@ public class HomeController(PortalData portal) : Controller
         var hospitals = (await listings.SearchAsync(new SafeTravel.Core.Services.ListingQuery { Kind = "help", Category = "hospital", PageSize = 8 }, ct)).Items;
         return View(new EmergencyPage(home.Content.EmergencyNumbers, hospitals));
     }
+
+    /// <summary>Sign-up for a free traveller account.</summary>
+    [HttpGet("/join")]
+    public IActionResult Join() => View();
 
     [HttpGet("/register")]
     public async Task<IActionResult> Register(CancellationToken ct) => View(await portal.HomeAsync(ct));

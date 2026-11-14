@@ -46,7 +46,7 @@ public class AccountController(SignInChecker checker, SignInManager<AppUser> sig
         if (roles.Any(Roles.Staff.Contains)) { audit.Add("Signed in to the Admin Portal", nameof(AppUser), user!.Id, user.FullName); await db.SaveChangesAsync(ct); }
 
         if (!string.IsNullOrEmpty(form.ReturnUrl) && Url.IsLocalUrl(form.ReturnUrl)) return LocalRedirect(form.ReturnUrl);
-        return LocalRedirect(roles.Any(Roles.Staff.Contains) ? "/admin" : roles.Contains(Roles.Supplier) ? "/supplier" : "/");
+        return LocalRedirect(roles.Any(Roles.Staff.Contains) ? "/admin" : roles.Contains(Roles.Supplier) ? "/supplier" : roles.Contains(Roles.Traveller) ? "/account" : "/");
     }
 
     [HttpPost("logout"), ValidateAntiForgeryToken]
