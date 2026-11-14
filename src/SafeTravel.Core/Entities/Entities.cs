@@ -220,8 +220,26 @@ public class Topic
     [MaxLength(400)] public string Summary { get; set; } = "";
     [MaxLength(16)] public string Icon { get; set; } = "📘";
     [MaxLength(20)] public string Tone { get; set; } = "blue";
+    /// <summary>What to do, one tip per line. Shown on the topic's own page.</summary>
+    [MaxLength(2000)] public string Dos { get; set; } = "";
+    /// <summary>What to avoid, one tip per line.</summary>
+    [MaxLength(2000)] public string Donts { get; set; } = "";
     public int SortOrder { get; set; }
     public bool IsActive { get; set; } = true;
+}
+
+/// <summary>A step-by-step first aid guide, with an optional video hosted on Vimeo or Streamable.</summary>
+public class FirstAidGuide
+{
+    public int Id { get; set; }
+    [MaxLength(120)] public string Title { get; set; } = "";
+    [MaxLength(16)] public string Icon { get; set; } = "🩹";
+    /// <summary>The steps in order, one per line.</summary>
+    [MaxLength(4000)] public string Steps { get; set; } = "";
+    [MaxLength(300)] public string? VideoUrl { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime UpdatedUtc { get; set; } = DateTime.UtcNow;
 }
 
 /// <summary>Key and value settings that drive the Web Portal (headline, sections, annual fee).</summary>

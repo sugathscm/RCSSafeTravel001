@@ -16,7 +16,7 @@
                 <span>@n.Label <a href="tel:@n.Number.Replace(" ", "")"><b>@n.Number</b></a></span>
             }
         </div>
-        <a class="more" href="/find?kind=help">Find help near you →</a>
+        <a class="more" href="/emergency">All numbers →</a>
     </div>
 </div>
 <header class="phead">
@@ -28,8 +28,11 @@
         <nav class="pnav" aria-label="Web portal">
             <a href="/" aria-current="@(page == "home" ? "page" : null)">Home</a>
             <a href="/find" aria-current="@(page == "find" ? "page" : null)">Find help &amp; places</a>
-            <a href="/donate" aria-current="@(page == "donate" ? "page" : null)">Donate</a>
+            <a href="/topics" aria-current="@(page == "topics" ? "page" : null)">Safety topics</a>
+            <a href="/first-aid" aria-current="@(page == "firstaid" ? "page" : null)">First aid</a>
+            <a href="/emergency" aria-current="@(page == "emergency" ? "page" : null)">Emergency numbers</a>
             <a href="/register" aria-current="@(page == "register" ? "page" : null)">For businesses</a>
+            <a href="/donate" aria-current="@(page == "donate" ? "page" : null)">Donate</a>
         </nav>
         <div class="pacts">
             @if (User.Identity?.IsAuthenticated == true)
@@ -60,6 +63,9 @@
                 <span class="fhead">Menu</span>
                 <a href="/">Home</a>
                 <a href="/find">Find help &amp; places</a>
+                <a href="/topics">Safety topics</a>
+                <a href="/first-aid">First aid</a>
+                <a href="/emergency">Emergency numbers</a>
                 <a href="/find?kind=business">Trusted businesses</a>
                 <a href="/donate">Donate</a>
             </div>

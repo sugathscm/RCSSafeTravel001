@@ -1,0 +1,61 @@
+@model TopicPage
+@{
+    Layout = "_Portal"; ViewData["Page"] = "topics";
+    var t = Model.Topic;
+    ViewData["Title"] = t.Name;
+}
+
+<section class="tband tone-@t.Tone">
+    <div class="wrap mid">
+        <a class="back" href="/topics">‹ All topics</a>
+        <span class="ic">@t.Icon</span>
+        <h1>@t.Name</h1>
+        <p>@t.Summary</p>
+    </div>
+</section>
+<section class="sec">
+    <div class="wrap mid tgrid">
+        <div class="tmain">
+            @if (t.Dos.Count > 0)
+            {
+                <div class="gcard">
+                    <span class="eyebrow ok">Do</span>
+                    @foreach (var x in t.Dos)
+                    {
+                        <div class="tick"><span class="mark ok" aria-hidden="true">✓</span><span>@x</span></div>
+                    }
+                </div>
+            }
+            @if (t.Donts.Count > 0)
+            {
+                <div class="gcard">
+                    <span class="eyebrow">Avoid</span>
+                    @foreach (var x in t.Donts)
+                    {
+                        <div class="tick"><span class="mark bad" aria-hidden="true">✕</span><span>@x</span></div>
+                    }
+                </div>
+            }
+            @if (t.Dos.Count == 0 && t.Donts.Count == 0)
+            {
+                <div class="gcard"><p>The advice for this topic is being prepared. Until then, see the first aid guides and the emergency numbers.</p></div>
+            }
+        </div>
+        <aside class="taside">
+            <a class="acard dark" href="/find?kind=help">
+                <span class="emoji">🗺️</span>
+                <b>Find help near you</b>
+                <span>Open the help points map →</span>
+            </a>
+            <div class="acard">
+                <span class="eyebrow mute">In an emergency</span>
+                @foreach (var n in Model.Numbers.Take(3))
+                {
+                    <div class="nrow"><span>@n.Label</span><a href="tel:@n.Number.Replace(" ", "")"><b class="num">@n.Number</b></a></div>
+                }
+                <a class="more" href="/emergency">All numbers →</a>
+            </div>
+            <a class="acard rose" href="/first-aid"><span class="emoji">🩹</span><b>First aid guides →</b></a>
+        </aside>
+    </div>
+</section>

@@ -83,6 +83,14 @@ Under each listing a supplier can add products: rooms, dishes, tours, rentals (S
 
 Every live listing has its own page at `/listing/{id}`: details, map, promotion, all products with prices and pictures, and the supplier's other listings. Tiles on the home page and the directory open this page. The directory itself (`/find`) loads 24 tiles at a time with a **Show more** button.
 
+## Safety content pages
+
+- **Safety topics** (`/topics`, `/topics/{id}`): each topic has its own page with a "Do" list and an "Avoid" list. Staff edit the lists in the Admin Portal under **Web Portal content**, **Safety topics**, **Do and avoid** (one tip per line).
+- **First aid** (`/first-aid`): step-by-step guides. Staff manage them under **First aid guides**: title, icon, steps (one per line) and an optional video. Videos are hosted on Vimeo or Streamable, not uploaded here: paste the video's link (for example `https://vimeo.com/123456789`) and the page shows the player. Other links are refused.
+- **Emergency numbers** (`/emergency`): the numbers set under **Web Portal content**, each with a call button, plus the hospitals listed as help points.
+
+The sample topics and guides are sample wording. The Red Cross reviews them before launch.
+
 ## Sponsor advertisements
 
 The Web Portal home page has three advertisement places, one per sponsor, shown under the headline. Staff manage them in the Admin Portal under **Sponsors**: choose the sponsor, write the headline, text, button and link, add a picture (JPG or PNG up to 2 MB) and switch each one on or off. Clicks are counted per advertisement. The mobile apps read the same advertisements from `GET /api/v1/ads`. The whole strip can be hidden under **Web Portal content**.
@@ -119,6 +127,8 @@ Open `/openapi/v1.json` in Development for the full list. The main calls:
 | `GET /api/v1/categories` | Categories that are switched on |
 | `GET /api/v1/listings?kind=&category=&district=&q=&lat=&lng=&radiusKm=` | Help points and businesses, nearest first when a position is sent |
 | `GET /api/v1/alerts` | Active alerts |
+| `GET /api/v1/topics` and `GET /api/v1/topics/{id}` | Safety topics with their do and avoid lists |
+| `GET /api/v1/first-aid` | First aid guides: steps in order and the video player address |
 | `GET /api/v1/ads` | The sponsor advertisements, up to three |
 | `POST /api/v1/listings/{id}/track/{view,call,directions}` | Counts shown to the supplier |
 | `POST /api/v1/donations` | Make a donation |

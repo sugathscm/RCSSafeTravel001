@@ -133,7 +133,41 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
         string[][] topics = [["Floods, landslides & storms", "Monsoon floods, hill-country landslides, cyclones, lightning and heat.", "🌧️", "blue"], ["Beach & water safety", "Rip currents, monsoon seas, rivers and waterfalls.", "🌊", "teal"],
             ["Health", "Dengue, food and water, heat illness.", "🦟", "green"], ["First aid", "What to do until help arrives.", "🩹", "rose"],
             ["Roads & transport", "Tuk-tuks, buses, trains, scooters and night driving.", "🛺", "sand"], ["Wildlife", "Elephants, snakes, monkeys, leeches and safaris.", "🐘", "olive"]];
-        db.Topics.AddRange(topics.Select((t, i) => new Topic { Name = t[0], Summary = t[1], Icon = t[2], Tone = t[3], SortOrder = i }));
+        // Sample guidance, one tip per line. The Red Cross reviews the wording before launch.
+        var guidance = new Dictionary<string, (string Dos, string Donts)>
+        {
+            ["Floods, landslides & storms"] = (
+                "Check alerts before hill-country trips and long drives\nIf water starts rising, move to higher ground. Don't wait to be told\nWatch for landslide signs: new cracks, tilting trees, muddy streams\nIf you feel a strong quake on the coast or the sea pulls back, head inland right away",
+                "Walking, swimming or driving through floodwater\nSheltering under trees during lightning\nStaying below steep slopes in heavy rain"),
+            ["Beach & water safety"] = (
+                "Swim at beaches with lifeguards or flags\nCheck the flag first. Red means no swimming\nCaught in a rip? Float, raise an arm and swim parallel to the shore\nThe south and west coasts are rough from May to September, the east coast from November to February",
+                "Swimming alone, at dusk or after drinking\nClimbing wet rocks near waterfalls\nBathing in rivers after rain upstream"),
+            ["Health"] = (
+                "Wear repellent in the daytime too. Dengue mosquitoes bite during the day\nDrink bottled or boiled water, and carry rehydration salts\nSee a doctor for any fever that lasts 2 days or more\nStay in the shade from 11 am to 3 pm and drink often",
+                "Taking ibuprofen or aspirin for a fever until dengue is ruled out\nLeaving any dog or monkey bite untreated. Get rabies care the same day"),
+            ["Roads & transport"] = (
+                "Use metered tuk-tuks or ride-hailing apps, or agree the fare first\nWear a helmet. The law requires it for riders and passengers\nAvoid driving after dark: poor lighting, animals and fast buses\nStay inside the train. Hanging out of the doors is dangerous",
+                "Riding a scooter without a Sri Lankan driving permit. Your insurance may not cover you\nStopping under cliffs on hill roads when it rains"),
+            ["Wildlife"] = (
+                "Stay at least 50 m from wild elephants and stay in your vehicle\nUse licensed safari jeeps and park guides\nWear closed shoes and carry a torch at night because of snakes\nWear leech socks on rainforest walks. Salt helps remove leeches",
+                "Feeding monkeys or carrying food where they can see it\nHonking at, flashing or chasing elephants for photos")
+        };
+        db.Topics.AddRange(topics.Select((t, i) => new Topic
+        {
+            Name = t[0], Summary = t[1], Icon = t[2], Tone = t[3], SortOrder = i,
+            Dos = guidance.TryGetValue(t[0], out var tips) ? tips.Dos : "", Donts = guidance.TryGetValue(t[0], out var avoid) ? avoid.Donts : ""
+        }));
+
+        // Sample first aid guides, one step per line. The Red Cross reviews the wording before launch.
+        string[][] guides = [
+            ["Not breathing (CPR)", "❤️", "Check for danger. Then tap their shoulders and shout.\nCall 1990, or get someone else to call. Put the phone on speaker.\nPush hard and fast in the centre of the chest, 100 to 120 times a minute.\nIf you are trained, give 2 rescue breaths after every 30 pushes.\nKeep going until help arrives or they start breathing. If there's an AED (defibrillator), use it."],
+            ["Severe bleeding", "🩸", "Press firmly on the wound with a clean cloth or your hand.\nKeep pressing. Don't lift it to check.\nIf blood soaks through, put more cloth on top and keep pressing.\nCall 1990. Keep them lying down and warm."],
+            ["Burns", "🔥", "Cool the burn under cool running water for at least 20 minutes.\nGently remove rings or tight items nearby, but not clothing stuck to the burn.\nCover it loosely with cling film or a clean plastic bag.\nGet medical help for big or deep burns, or burns on the face or hands. Never use ice, butter or toothpaste."],
+            ["Snake bite", "🐍", "Move away from the snake. Help the person stay calm and still.\nTake off rings, watches and tight clothing near the bite.\nKeep the bitten limb still, like a splint, at heart level or below.\nGet to hospital fast. Call 1990. Don't cut or suck the bite, and don't use a tourniquet."],
+            ["Heat stroke", "🥵", "Move them into shade or a cool room.\nCool them fast with wet cloths, a fan, or ice packs at the neck and armpits.\nIf they are awake, give small sips of water.\nCall 1990 if they are confused, collapse or stop sweating."],
+            ["Drowning", "🏊", "Don't go into the water unless you are trained. Throw them something that floats.\nOnce they are out, check if they are breathing.\nIf not, start CPR. If you are trained, give 5 rescue breaths first.\nCall 1990 and keep them warm. They need a check-up even if they seem fine."],
+            ["Choking", "😮", "Ask \"Are you choking?\" Encourage them to cough.\nGive up to 5 firm blows between the shoulder blades.\nThen give up to 5 abdominal thrusts.\nKeep switching between the two. Call 1990 if it doesn't clear."]];
+        db.FirstAidGuides.AddRange(guides.Select((g, i) => new FirstAidGuide { Title = g[0], Icon = g[1], Steps = g[2], SortOrder = i }));
 
         Sponsor uber = new() { Name = "Uber", Role = "Safe Travel partner", SortOrder = 0 }, dialog = new() { Name = "Dialog", Role = "Marketing partner", SortOrder = 1 };
         db.Sponsors.AddRange(uber, dialog);

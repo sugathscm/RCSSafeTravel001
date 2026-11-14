@@ -5,6 +5,14 @@ namespace SafeTravel.Web.Infrastructure;
 
 public record ListingPage(ListingDto Listing, IReadOnlyList<ProductDto> Products, IReadOnlyList<ListingDto> More);
 
+/// <summary>One safety topic on its own page, with the emergency numbers shown beside it.</summary>
+public record TopicPage(TopicDetailDto Topic, IReadOnlyList<NumberDto> Numbers);
+
+/// <summary>The first aid page: every guide in the list, the one that is open, and the ambulance number for the call button.</summary>
+public record FirstAidPage(IReadOnlyList<FirstAidGuideDto> Guides, FirstAidGuideDto? Guide, string? Ambulance);
+
+public record EmergencyPage(IReadOnlyList<NumberDto> Numbers, IReadOnlyList<ListingDto> Hospitals);
+
 public record PortalHome(HomeContentDto Content, IReadOnlyList<AlertDto> Alerts, IReadOnlyList<CategoryDto> Categories, IReadOnlyList<ListingDto> Businesses, IReadOnlyList<AdDto> Ads);
 
 /// <summary>

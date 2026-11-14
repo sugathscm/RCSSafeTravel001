@@ -50,6 +50,17 @@ public class PublicApi(ContentService content, ListingService listings, AlertSer
     [HttpGet("alerts"), OutputCache(PolicyName = "alerts")]
     public Task<IReadOnlyList<AlertDto>> Alerts(CancellationToken ct) => alerts.ActiveAsync(ct);
 
+    /// <summary>Safety topics with their do and avoid lists.</summary>
+    [HttpGet("topics"), OutputCache(PolicyName = "content")]
+    public Task<IReadOnlyList<TopicDetailDto>> Topics([FromServices] SafetyContentService safety, CancellationToken ct) => safety.TopicsAsync(true, ct);
+
+    [HttpGet("topics/{id:int}"), OutputCache(PolicyName = "content")]
+    public Task<TopicDetailDto> Topic(int id, [FromServices] SafetyContentService safety, CancellationToken ct) => safety.TopicAsync(id, ct);
+
+    /// <summary>First aid guides: steps in order and, where one is set, the video player address.</summary>
+    [HttpGet("first-aid"), OutputCache(PolicyName = "content")]
+    public Task<IReadOnlyList<FirstAidGuideDto>> FirstAid([FromServices] SafetyContentService safety, CancellationToken ct) => safety.GuidesAsync(true, ct);
+
     [HttpGet("emergency-numbers"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<NumberDto>> Numbers(CancellationToken ct) => content.NumbersAsync(ct);
 

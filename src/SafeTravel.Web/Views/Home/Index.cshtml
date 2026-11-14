@@ -89,11 +89,12 @@
                     <span class="eyebrow">Safety topics</span>
                     <h2>Know before you go</h2>
                 </div>
+                <a class="btn btn-text" href="/topics">All topics →</a>
             </div>
             <div class="cards mt-0">
                 @foreach (var t in c.Topics)
                 {
-                    <div class="tcard tone-@t.Tone"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p></div>
+                    <a class="tcard tone-@t.Tone" href="/topics/@t.Id"><span class="ic">@t.Icon</span><h3>@t.Name</h3><p class="small">@t.Summary</p></a>
                 }
             </div>
         </div>
