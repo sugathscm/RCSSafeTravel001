@@ -10,7 +10,7 @@
     <div class="wrap mid vstack gap-4">
         <div class="ahead">
             <div class="who">
-                <span class="avatar big" aria-hidden="true">@initials</span>
+                <span class="avatar xl" aria-hidden="true">@initials</span>
                 <div>
                     <h1>@Model.FullName</h1>
                     <span class="small mute">Free account · @Model.Email</span>
@@ -37,7 +37,7 @@
                 @foreach (var c in Model.Contacts)
                 {
                     <div class="arow">
-                        <span class="avatar mid" aria-hidden="true">@(c.Name.Length > 0 ? char.ToUpperInvariant(c.Name[0]).ToString() : "?")</span>
+                        <span class="avatar md" aria-hidden="true">@(c.Name.Length > 0 ? char.ToUpperInvariant(c.Name[0]).ToString() : "?")</span>
                         <span class="txt"><b>@c.Name</b><span>@(c.Relationship.Length > 0 ? c.Relationship : "Contact") · @c.Phone</span></span>
                         <button type="button" class="linkbtn" data-del-contact="@c.Id">Remove</button>
                     </div>
