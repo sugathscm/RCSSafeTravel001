@@ -6,7 +6,8 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl">
         <div class="body vstack gap-3">
-            <a class="logo" href="/"><span class="mk">🛡️</span><span>Safe Travel Sri Lanka<small>Sign in</small></span></a>
+            <a class="brand" href="/"><span class="brand-logo"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span><span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">by Sri Lanka Red Cross Society</span></span></a>
+            <h1>Sign in</h1>
             @if (!string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-danger mb-0" role="alert">@Model.Error</div> }
             @if (Model.NeedsCode && string.IsNullOrEmpty(Model.Error)) { <div class="alert alert-info mb-0" role="status">Enter the six-digit code from your authenticator app.</div> }
             <div class="field"><label class="form-label" for="l-email">Email</label><input class="form-control" id="l-email" name="Email" type="email" value="@Model.Email" required autocomplete="username" autofocus></div>

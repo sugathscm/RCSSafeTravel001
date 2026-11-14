@@ -9,33 +9,41 @@
 
 <div class="ebar">
     <div class="wrap">
-        <span class="hot">🆘 Emergency in Sri Lanka</span>
-        @foreach (var n in home.Content.EmergencyNumbers)
-        {
-            <span>@n.Label <a href="tel:@n.Number.Replace(" ", "")"><b>@n.Number</b></a></span>
-        }
+        <div class="nums">
+            <span class="hot">🆘 Emergency in Sri Lanka</span>
+            @foreach (var n in home.Content.EmergencyNumbers)
+            {
+                <span>@n.Label <a href="tel:@n.Number.Replace(" ", "")"><b>@n.Number</b></a></span>
+            }
+        </div>
+        <a class="more" href="/find?kind=help">Find help near you →</a>
     </div>
 </div>
 <header class="phead">
     <div class="wrap">
-        <a class="logo" href="/"><span class="mk">🛡️</span><span>Safe Travel Sri Lanka<small>Travel-safety portal</small></span></a>
+        <a class="brand" href="/">
+            <span class="brand-logo"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span>
+            <span class="brand-text"><span class="brand-name">Safe Travel Sri Lanka</span><span class="brand-sub">by Sri Lanka Red Cross Society</span></span>
+        </a>
         <nav class="pnav" aria-label="Web portal">
             <a href="/" aria-current="@(page == "home" ? "page" : null)">Home</a>
             <a href="/find" aria-current="@(page == "find" ? "page" : null)">Find help &amp; places</a>
             <a href="/donate" aria-current="@(page == "donate" ? "page" : null)">Donate</a>
+            <a href="/register" aria-current="@(page == "register" ? "page" : null)">For businesses</a>
         </nav>
-        <span class="sp"></span>
-        @if (User.Identity?.IsAuthenticated == true)
-        {
-            @if (staff) { <a class="btn btn-plain" href="/admin">Admin Portal</a> }
-            @if (User.IsInRole(Roles.Supplier)) { <a class="btn btn-plain" href="/supplier">My business</a> }
-            <form method="post" action="/account/logout" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-plain" type="submit">Sign out</button></form>
-        }
-        else
-        {
-            <a class="btn btn-plain" href="/account/login">Sign in</a>
-            <a class="btn btn-danger" href="/register">List your business</a>
-        }
+        <div class="pacts">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (staff) { <a class="btn btn-plain" href="/admin">Admin Portal</a> }
+                @if (User.IsInRole(Roles.Supplier)) { <a class="btn btn-plain" href="/supplier">My business</a> }
+                <form method="post" action="/account/logout">@Html.AntiForgeryToken()<button class="btn btn-plain" type="submit">Sign out</button></form>
+            }
+            else
+            {
+                <a class="btn btn-plain acct" href="/account/login"><span class="avatar" aria-hidden="true">👤</span>Sign in</a>
+                <a class="btn btn-danger" href="/register">List your business</a>
+            }
+        </div>
     </div>
 </header>
 
@@ -43,17 +51,35 @@
 
 <footer class="pfoot">
     <div class="wrap">
-        <div>
-            <b class="fname">Safe Travel Sri Lanka</b>
-            <p class="fnote">A travel-safety service for visitors and residents.</p>
+        <div class="cols">
+            <div class="col">
+                <span class="fbrand"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="Sri Lanka Red Cross Society logo" data-logo></span><b class="fname">Safe Travel Sri Lanka</b></span>
+                <p class="fnote">A free travel-safety service of the Sri Lanka Red Cross Society, for visitors and residents.</p>
+            </div>
+            <div class="col">
+                <span class="fhead">Menu</span>
+                <a href="/">Home</a>
+                <a href="/find">Find help &amp; places</a>
+                <a href="/find?kind=business">Trusted businesses</a>
+                <a href="/donate">Donate</a>
+            </div>
+            <div class="col">
+                <span class="fhead">Emergency</span>
+                @foreach (var n in home.Content.EmergencyNumbers)
+                {
+                    <span class="fnum"><span>@n.Label</span><b class="num">@n.Number</b></span>
+                }
+            </div>
+            <div class="col">
+                <span class="fhead">For businesses</span>
+                <a class="btn btn-line" href="/register">List your business</a>
+                <a class="btn btn-line" href="/account/login">Sign in</a>
+            </div>
         </div>
-        <table><tbody>
-            @foreach (var n in home.Content.EmergencyNumbers)
-            {
-                <tr><td>@n.Label</td><td class="num">@n.Number</td></tr>
-            }
-        </tbody></table>
-        <div>Developed by <b class="text-white">Evokes Digital Worldwide</b></div>
+        <div class="legal">
+            <span>© @DateTime.UtcNow.Year Sri Lanka Red Cross Society</span>
+            <span>Developed by <b>Evokes Digital Worldwide</b></span>
+        </div>
     </div>
 </footer>
 
