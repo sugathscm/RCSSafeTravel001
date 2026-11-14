@@ -711,3 +711,50 @@ END;
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114033253_SafetyContent'
+)
+BEGIN
+    ALTER TABLE [Topics] ADD [Donts] nvarchar(2000) NOT NULL DEFAULT N'';
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114033253_SafetyContent'
+)
+BEGIN
+    ALTER TABLE [Topics] ADD [Dos] nvarchar(2000) NOT NULL DEFAULT N'';
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114033253_SafetyContent'
+)
+BEGIN
+    CREATE TABLE [FirstAidGuides] (
+        [Id] int NOT NULL IDENTITY,
+        [Title] nvarchar(120) NOT NULL,
+        [Icon] nvarchar(16) NOT NULL,
+        [Steps] nvarchar(4000) NOT NULL,
+        [VideoUrl] nvarchar(300) NULL,
+        [SortOrder] int NOT NULL,
+        [IsActive] bit NOT NULL,
+        [UpdatedUtc] datetime2 NOT NULL,
+        CONSTRAINT [PK_FirstAidGuides] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114033253_SafetyContent'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20261114033253_SafetyContent', N'10.0.15');
+END;
+
+COMMIT;
+GO
+
