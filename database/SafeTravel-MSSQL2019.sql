@@ -823,3 +823,103 @@ END;
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE TABLE [Reviews] (
+        [Id] int NOT NULL IDENTITY,
+        [ListingId] int NOT NULL,
+        [UserId] int NOT NULL,
+        [AuthorName] nvarchar(120) NOT NULL,
+        [Stars] int NOT NULL,
+        [Text] nvarchar(1000) NOT NULL,
+        [Status] int NOT NULL,
+        [CreatedUtc] datetime2 NOT NULL,
+        [DecidedUtc] datetime2 NULL,
+        CONSTRAINT [PK_Reviews] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_Reviews_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION,
+        CONSTRAINT [FK_Reviews_Listings_ListingId] FOREIGN KEY ([ListingId]) REFERENCES [Listings] ([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE TABLE [TravellerContacts] (
+        [Id] int NOT NULL IDENTITY,
+        [UserId] int NOT NULL,
+        [Name] nvarchar(120) NOT NULL,
+        [Phone] nvarchar(30) NOT NULL,
+        [Relationship] nvarchar(60) NOT NULL,
+        [CreatedUtc] datetime2 NOT NULL,
+        CONSTRAINT [PK_TravellerContacts] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_TravellerContacts_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE TABLE [TripStops] (
+        [Id] int NOT NULL IDENTITY,
+        [UserId] int NOT NULL,
+        [Place] nvarchar(120) NOT NULL,
+        [Date] date NULL,
+        [Note] nvarchar(200) NOT NULL,
+        [CreatedUtc] datetime2 NOT NULL,
+        CONSTRAINT [PK_TripStops] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_TripStops_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE INDEX [IX_Reviews_ListingId_Status] ON [Reviews] ([ListingId], [Status]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE UNIQUE INDEX [IX_Reviews_UserId_ListingId] ON [Reviews] ([UserId], [ListingId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE INDEX [IX_TravellerContacts_UserId] ON [TravellerContacts] ([UserId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    CREATE INDEX [IX_TripStops_UserId] ON [TripStops] ([UserId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114035832_TravellerAccount'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20261114035832_TravellerAccount', N'10.0.15');
+END;
+
+COMMIT;
+GO
+
