@@ -758,3 +758,68 @@ END;
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    ALTER TABLE [Alerts] ADD [Details] nvarchar(600) NOT NULL DEFAULT N'';
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    ALTER TABLE [Alerts] ADD [Latitude] float NULL;
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    ALTER TABLE [Alerts] ADD [Longitude] float NULL;
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    CREATE TABLE [RiskZones] (
+        [Id] int NOT NULL IDENTITY,
+        [Type] int NOT NULL,
+        [Name] nvarchar(120) NOT NULL,
+        [Details] nvarchar(600) NOT NULL,
+        [Source] nvarchar(120) NOT NULL,
+        [Latitude] float NOT NULL,
+        [Longitude] float NOT NULL,
+        [RadiusMeters] int NOT NULL,
+        [IsActive] bit NOT NULL,
+        [UpdatedUtc] datetime2 NOT NULL,
+        CONSTRAINT [PK_RiskZones] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    CREATE INDEX [IX_RiskZones_IsActive] ON [RiskZones] ([IsActive]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20261114034643_MapAndAlerts'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20261114034643_MapAndAlerts', N'10.0.15');
+END;
+
+COMMIT;
+GO
+
