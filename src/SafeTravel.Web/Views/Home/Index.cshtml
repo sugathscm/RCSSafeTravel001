@@ -15,7 +15,7 @@
             <p>@c.HeroText</p>
             <div class="hrow">
                 <a class="btn btn-danger btn-xl btn-glow" href="/find?kind=help">Find help near you</a>
-                <a class="btn btn-glass btn-xl" href="/find?kind=business">Trusted businesses →</a>
+                <a class="btn btn-glass btn-xl" href="/map">Open the live map →</a>
             </div>
         </div>
         @if (On("alerts") && Model.Alerts.Count > 0)
@@ -24,11 +24,11 @@
                 <h4><span><span class="dot"></span> Live right now</span><span class="upd">Updated <time datetime="@(Model.Alerts.Max(a => a.PublishedUtc).ToString("o"))" data-ago></time></span></h4>
                 @foreach (var a in Model.Alerts.Take(3))
                 {
-                    <div class="al">
+                    <a class="al" href="/alerts#alert-@a.Id">
                         <span class="dot @Dot(a.Level)"></span>
-                        <div class="txt"><span class="k">@a.Type · @a.Area</span><b>@a.Title</b></div>
+                        <span class="txt"><span class="k">@a.Type · @a.Area</span><b>@a.Title</b></span>
                         <time datetime="@a.PublishedUtc.ToString("o")" data-ago></time>
-                    </div>
+                    </a>
                 }
             </div>
         }
@@ -73,7 +73,7 @@
                         <a class="chip" href="/find?kind=help&category=@cat.Slug"><span>@cat.Icon</span>@cat.Name</a>
                     }
                 </div>
-                <a class="btn btn-dark btn-lg mt-4" href="/find?kind=help">Open the full list →</a>
+                <a class="btn btn-dark btn-lg mt-4" href="/map">Open the full map →</a>
             </div>
             <div class="map" id="help-map" role="application" aria-label="Map of help points"></div>
         </div>

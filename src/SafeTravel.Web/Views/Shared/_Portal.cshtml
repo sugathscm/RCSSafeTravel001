@@ -27,6 +27,8 @@
         </a>
         <nav class="pnav" aria-label="Web portal">
             <a href="/" aria-current="@(page == "home" ? "page" : null)">Home</a>
+            <a href="/map" aria-current="@(page == "map" ? "page" : null)">Live map</a>
+            <a href="/alerts" aria-current="@(page == "alerts" ? "page" : null)">Alerts</a>
             <a href="/find" aria-current="@(page == "find" ? "page" : null)">Find help &amp; places</a>
             <a href="/topics" aria-current="@(page == "topics" ? "page" : null)">Safety topics</a>
             <a href="/first-aid" aria-current="@(page == "firstaid" ? "page" : null)">First aid</a>
@@ -50,9 +52,9 @@
     </div>
 </header>
 
-<main>@RenderBody()</main>
+<main class="@(page == "map" ? "is-map" : null)">@RenderBody()</main>
 
-<footer class="pfoot">
+<footer class="pfoot @(page == "map" ? "d-none" : null)">
     <div class="wrap">
         <div class="cols">
             <div class="col">
@@ -62,6 +64,8 @@
             <div class="col">
                 <span class="fhead">Menu</span>
                 <a href="/">Home</a>
+                <a href="/map">Live map</a>
+                <a href="/alerts">Alerts</a>
                 <a href="/find">Find help &amp; places</a>
                 <a href="/topics">Safety topics</a>
                 <a href="/first-aid">First aid</a>

@@ -154,6 +154,29 @@ public class Alert
     public DateTime PublishedUtc { get; set; } = DateTime.UtcNow;
     public DateTime? ExpiresUtc { get; set; }
     public bool IsActive { get; set; } = true;
+    /// <summary>Longer advice, shown on the alerts page and the safety map.</summary>
+    [MaxLength(600)] public string Details { get; set; } = "";
+    /// <summary>Where the alert applies, when staff pinned it on the map. Both are set, or neither.</summary>
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+}
+
+public enum RiskZoneType { Flood = 0, Landslide = 1, RoadClosure = 2, BeachFlag = 3, Wildlife = 4, Other = 5 }
+
+/// <summary>An area on the safety map that staff mark as risky: a flood or landslide zone, a closed road, a red-flag beach.</summary>
+public class RiskZone
+{
+    public int Id { get; set; }
+    public RiskZoneType Type { get; set; }
+    [MaxLength(120)] public string Name { get; set; } = "";
+    [MaxLength(600)] public string Details { get; set; } = "";
+    [MaxLength(120)] public string Source { get; set; } = "";
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    /// <summary>Radius of the marked area in metres. 0 shows a pin only.</summary>
+    public int RadiusMeters { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime UpdatedUtc { get; set; } = DateTime.UtcNow;
 }
 
 public enum PaymentKind { Donation = 0, SupplierFee = 1 }

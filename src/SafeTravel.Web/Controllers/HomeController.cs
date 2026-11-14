@@ -28,6 +28,13 @@ public class HomeController(PortalData portal) : Controller
     [HttpGet("/donate")]
     public async Task<IActionResult> Donate(CancellationToken ct) => View(await portal.HomeAsync(ct));
 
+    /// <summary>The safety map: risk zones, alerts and help points as layers.</summary>
+    [HttpGet("/map")]
+    public async Task<IActionResult> Map(CancellationToken ct) => View(await portal.HomeAsync(ct));
+
+    [HttpGet("/alerts")]
+    public async Task<IActionResult> Alerts(CancellationToken ct) => View(await portal.HomeAsync(ct));
+
     [HttpGet("/topics")]
     public async Task<IActionResult> Topics(CancellationToken ct) => View(await portal.HomeAsync(ct));
 

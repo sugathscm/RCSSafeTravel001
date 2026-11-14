@@ -53,6 +53,71 @@
     });
   }
 
+  // ----- safety map: risk zones, alerts and help points as layers that can be switched on and off -----
+  var $sm = $('#safety-map');
+  if ($sm.length && window.L) {
+    var ZONES = { flood: ['🌊', 'Flood zone', '#2f6fd6'], landslide: ['⛰️', 'Landslide zone', '#c3461d'], roadclosure: ['🚧', 'Road closure', '#a87708'], beachflag: ['🚩', 'Beach flag', '#c62828'], wildlife: ['🐘', 'Wildlife', '#24703c'], other: ['⚠️', 'Risk', '#6b665e'] };
+    var qs0 = new URLSearchParams(location.search), flat = Number(qs0.get('lat')), flng = Number(qs0.get('lng'));
+    var focus = qs0.get('lat') && qs0.get('lng') && isFinite(flat) && isFinite(flng);
+    var smap = L.map($sm[0]).setView(focus ? [flat, flng] : [7.6, 80.7], focus ? 12 : 8), groups = {}, counts = {}, latest = null;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(smap);
+
+    function group(key) { return groups[key] || (groups[key] = L.layerGroup()); }
+    function count(key) { counts[key] = (counts[key] || 0) + 1; }
+    function seen(iso) { if (iso && (!latest || iso > latest)) latest = iso; }
+    function pin(key, lat, lng, icon, cls, title, sel) {
+      L.marker([lat, lng], { title: title, icon: L.divIcon({ className: 'pin ' + cls, html: e(icon), iconSize: [34, 34] }) }).addTo(group(key)).on('click', function () { select(sel); });
+    }
+    function select(s) {
+      var tel = (s.phone || '').replace(/[^0-9+]/g, '');
+      $('#map-sel').removeClass('d-none').html('<div class="head"><span class="ic">' + e(s.icon) + '</span><span class="names"><span class="kk">' + e(s.kicker) + '</span><b class="nm">' + e(s.name) + '</b></span>' +
+        '<button type="button" class="x" data-mapsel-close aria-label="Close">✕</button></div>' + (s.details ? '<p>' + e(s.details) + '</p>' : '') + '<div class="hrow">' +
+        '<a class="btn btn-dark" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '"' + (s.id ? ' data-track="directions" data-id="' + s.id + '"' : '') + '>Directions</a>' +
+        (tel ? '<a class="btn btn-plain" href="tel:' + tel + '" data-track="call" data-id="' + s.id + '">Call ' + e(s.phone) + '</a>' : '') +
+        (s.id ? '<a class="btn btn-plain" href="/listing/' + s.id + '">Open page</a>' : '') + '</div>');
+    }
+    function paint() {
+      $('.layer').each(function () {
+        var key = this.dataset.layer, on = $(this).hasClass('on'), g = groups[key];
+        $(this).attr('aria-pressed', on).find('.n').text(counts[key] || 0);
+        if (g) { if (on) g.addTo(smap); else smap.removeLayer(g); }
+      });
+      $('#map-updated').text(latest ? ' · updated ' + ST.ago(latest).toLowerCase() : '');
+    }
+    $(document).on('click', '.layer', function () { $(this).toggleClass('on'); paint(); });
+    $(document).on('click', '[data-mapsel-close]', function () { $('#map-sel').addClass('d-none').empty(); });
+
+    ST.api('GET', 'risk-zones', null, true).done(function (zones) {
+      zones.forEach(function (z) {
+        var t = ZONES[z.type] || ZONES.other, key = 'zone-' + (ZONES[z.type] ? z.type : 'other');
+        var sel = { icon: t[0], kicker: t[1] + (z.source ? ' · ' + z.source : ''), name: z.name, details: z.details, lat: z.latitude, lng: z.longitude };
+        if (z.radiusMeters > 0) L.circle([z.latitude, z.longitude], { radius: z.radiusMeters, color: t[2], weight: 2, fillColor: t[2], fillOpacity: 0.16 }).addTo(group(key)).on('click', function () { select(sel); });
+        pin(key, z.latitude, z.longitude, t[0], 'risk', z.name, sel);
+        count(key); seen(z.updatedUtc);
+      });
+      paint();
+    });
+    ST.api('GET', 'alerts', null, true).done(function (alerts) {
+      alerts.forEach(function (a) {
+        seen(a.publishedUtc);
+        if (a.latitude == null || a.longitude == null) return;
+        pin('alerts', a.latitude, a.longitude, '🔔', 'alert', a.title, { icon: '🔔', kicker: a.type + ' · ' + a.area, name: a.title, details: a.details, lat: a.latitude, lng: a.longitude });
+        count('alerts');
+      });
+      paint();
+    });
+    ST.api('GET', 'listings', { kind: 'help', pageSize: 200 }, true).done(function (r) {
+      r.items.forEach(function (l) {
+        if (!l.latitude && !l.longitude) return;
+        var key = 'help-' + l.categorySlug;
+        pin(key, l.latitude, l.longitude, l.icon, '', l.name, { icon: l.icon, kicker: l.category, name: l.name, details: [l.town, l.hours].filter(Boolean).join(' · '), lat: l.latitude, lng: l.longitude, phone: l.phone, id: l.id });
+        count(key);
+      });
+      paint();
+    });
+    paint();
+  }
+
   // ----- find help and places -----
   var $find = $('#find');
   if ($find.length) {

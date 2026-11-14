@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<EmergencyNumber> EmergencyNumbers => Set<EmergencyNumber>();
     public DbSet<Topic> Topics => Set<Topic>();
     public DbSet<FirstAidGuide> FirstAidGuides => Set<FirstAidGuide>();
+    public DbSet<RiskZone> RiskZones => Set<RiskZone>();
     public DbSet<SiteSetting> SiteSettings => Set<SiteSetting>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
@@ -70,6 +71,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         });
 
         b.Entity<Alert>().HasIndex(x => new { x.IsActive, x.PublishedUtc });
+        b.Entity<RiskZone>().HasIndex(x => x.IsActive);
         b.Entity<AuditEntry>().HasIndex(x => x.WhenUtc);
         b.Entity<RefreshToken>().HasIndex(x => x.TokenHash).IsUnique();
         b.Entity<ReminderLog>().HasIndex(x => new { x.SupplierId, x.RenewalDate, x.DaysBefore }).IsUnique();

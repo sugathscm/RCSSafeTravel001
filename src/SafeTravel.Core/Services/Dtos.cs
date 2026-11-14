@@ -77,7 +77,24 @@ public record SupplierDto(int Id, string BusinessName, string ContactName, strin
     string? RejectReason, DateOnly? PaidUntil, int? DaysLeft, int Views, int Calls, int Directions,
     ListingDto? Listing, IReadOnlyList<DocumentDto> Documents, IReadOnlyList<ListingDto> Listings);
 
-public record AlertDto(int Id, string Level, string Type, string Area, string Title, string Source, DateTime PublishedUtc, bool IsActive);
+public record AlertDto(int Id, string Level, string Type, string Area, string Title, string Source, DateTime PublishedUtc, bool IsActive,
+    string Details = "", double? Latitude = null, double? Longitude = null);
+
+/// <summary>A risk zone on the safety map. Type is flood, landslide, roadclosure, beachflag, wildlife or other.</summary>
+public record RiskZoneDto(int Id, string Type, string Name, string Details, string Source, double Latitude, double Longitude, int RadiusMeters, bool IsActive, DateTime UpdatedUtc);
+
+public class RiskZoneInput
+{
+    [Required, RegularExpression("flood|landslide|roadclosure|beachflag|wildlife|other")] public string Type { get; set; } = "other";
+    [Required, StringLength(120, MinimumLength = 3)] public string Name { get; set; } = "";
+    [StringLength(600)] public string? Details { get; set; }
+    [StringLength(120)] public string? Source { get; set; }
+    /// <summary>Inside Sri Lanka and its coastal waters.</summary>
+    [Range(5.5, 10.2)] public double Latitude { get; set; }
+    [Range(79.2, 82.2)] public double Longitude { get; set; }
+    [Range(0, 50000)] public int RadiusMeters { get; set; }
+    public bool IsActive { get; set; } = true;
+}
 
 public class AlertInput
 {
@@ -86,6 +103,10 @@ public class AlertInput
     [Required, StringLength(120)] public string Area { get; set; } = "";
     [Required, StringLength(240, MinimumLength = 5)] public string Title { get; set; } = "";
     [StringLength(120)] public string? Source { get; set; }
+    [StringLength(600)] public string? Details { get; set; }
+    /// <summary>Optional pin on the safety map. Give both or neither.</summary>
+    [Range(5.5, 10.2)] public double? Latitude { get; set; }
+    [Range(79.2, 82.2)] public double? Longitude { get; set; }
 }
 
 public record PaymentDto(int Id, DateTime CreatedUtc, string Kind, string Payer, decimal Amount, string Currency, string Status, string? Reference);
@@ -200,7 +221,7 @@ public static class Map
         string.IsNullOrWhiteSpace(a.LinkLabel) ? "Learn more" : a.LinkLabel, a.LinkUrl,
         a.ImagePath is null ? null : $"/api/v1/ads/{a.Id}/image?v={a.UpdatedUtc.Ticks}", a.IsActive, a.Clicks);
 
-    public static AlertDto ToDto(this Alert a) => new(a.Id, a.Level.ToString().ToLowerInvariant(), a.Type, a.Area, a.Title, a.Source, a.PublishedUtc, a.IsActive);
+    public static AlertDto ToDto(this Alert a) => new(a.Id, a.Level.ToString().ToLowerInvariant(), a.Type, a.Area, a.Title, a.Source, a.PublishedUtc, a.IsActive, a.Details, a.Latitude, a.Longitude);
 
     public static PaymentDto ToDto(this Payment p) => new(p.Id, p.CreatedUtc, p.Kind == PaymentKind.Donation ? "Donation" : "Supplier fee",
         p.PayerName, p.Amount, p.Currency, p.Status.ToString(), p.GatewayReference);

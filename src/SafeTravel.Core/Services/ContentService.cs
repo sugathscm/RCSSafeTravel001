@@ -190,7 +190,8 @@ public class AlertService(AppDbContext db, AuditService audit, INotificationSend
 
     public async Task<AlertDto> PublishAsync(AlertInput input, CancellationToken ct = default)
     {
-        var a = new Alert { Level = Enum.Parse<AlertLevel>(input.Level, true), Type = input.Type.Trim(), Area = input.Area.Trim(), Title = input.Title.Trim(), Source = string.IsNullOrWhiteSpace(input.Source) ? "Alert desk" : input.Source.Trim(), PublishedUtc = clock.UtcNow };
+        if ((input.Latitude is null) != (input.Longitude is null)) throw new RuleException("Give both the latitude and the longitude, or leave both empty.");
+        var a = new Alert { Level = Enum.Parse<AlertLevel>(input.Level, true), Type = input.Type.Trim(), Area = input.Area.Trim(), Title = input.Title.Trim(), Source = string.IsNullOrWhiteSpace(input.Source) ? "Alert desk" : input.Source.Trim(), PublishedUtc = clock.UtcNow, Details = input.Details?.Trim() ?? "", Latitude = input.Latitude, Longitude = input.Longitude };
         db.Alerts.Add(a);
         audit.Add($"Published alert \"{a.Title}\"", nameof(Alert));
         await db.SaveChangesAsync(ct);
