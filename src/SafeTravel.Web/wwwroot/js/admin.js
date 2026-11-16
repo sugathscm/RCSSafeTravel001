@@ -120,7 +120,7 @@
   };
 
   screens.content = function () {
-    var labels = { alerts: 'Live alerts panel', ads: 'Sponsor advertisements', map: 'Help points map', businesses: 'Verified businesses', topics: 'Safety topics', donate: 'Donate card', sponsors: 'Sponsors strip' };
+    var labels = { topads: 'Top sponsor banners', alerts: 'Live alerts panel', ads: 'Sponsor advertisements', map: 'Help points map', businesses: 'Verified businesses', topics: 'Safety topics', donate: 'Donate card', sponsors: 'Sponsors strip' };
     return ST.api('GET', 'content/home').then(function (c) {
       return head('Web Portal content', 'The public site has no fixed pages. The headline, sections, emergency numbers and topics below are what it shows.') +
         '<form class="panel" data-form="hero"><header><h3>Home page headline</h3></header><div class="body vstack gap-3">' +
@@ -228,10 +228,12 @@
     });
   };
 
+  // Places 1 to 3 are the Sponsored section of the home page, 4 and 5 the two banners at the top of it.
+  function adPlace(slot) { return slot === 4 ? 'Top banner, left' : slot === 5 ? 'Top banner, right' : 'Place ' + slot; }
   function adSlot(slot, ad, sponsors) {
     ad = ad || { sponsorId: 0, headline: '', text: '', linkLabel: '', linkUrl: '', isActive: true, clicks: 0 };
     var id = 'ad' + slot, ro = can.content ? '' : ' disabled';
-    return '<form class="adslot" data-form="ad" data-slot="' + slot + '"><div class="hrow"><b>Place ' + slot + '</b>' + (ad.id ? '<span class="pill ' + (ad.isActive ? 'ok">Showing' : '">Off') + '</span>' : '<span class="pill warn">Empty</span>') +
+    return '<form class="adslot" data-form="ad" data-slot="' + slot + '"><div class="hrow"><b>' + adPlace(slot) + '</b>' + (ad.id ? '<span class="pill ' + (ad.isActive ? 'ok">Showing' : '">Off') + '</span>' : '<span class="pill warn">Empty</span>') +
       '<span class="sp"></span><span class="small mute num">' + ad.clicks + ' click' + (ad.clicks === 1 ? '' : 's') + '</span></div>' +
       (ad.imageUrl ? '<img src="' + e(ad.imageUrl) + '" alt="Picture of advertisement ' + slot + '">' : '') +
       field(id + '-sp', 'Sponsor', '<select class="form-select" id="' + id + '-sp" name="sponsorId"' + ro + '>' + sponsors.map(function (s) { return '<option value="' + s.id + '"' + (s.id === ad.sponsorId ? ' selected' : '') + '>' + e(s.name) + (s.isActive ? '' : ' (switched off)') + '</option>'; }).join('') + '</select>') +
@@ -241,7 +243,7 @@
       field(id + '-u', 'Link (https://)', text(id + '-u', 'linkUrl', ad.linkUrl, 'type="url" required maxlength="300" pattern="https://.+" placeholder="https://"' + ro)) +
       '<div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" role="switch" id="' + id + '-on" name="isActive"' + (ad.isActive ? ' checked' : '') + ro + '><label class="form-check-label fw-semibold" for="' + id + '-on">Show on the portal and in the app</label></div>' +
       (can.content ? '<div class="hrow"><button class="btn btn-danger" type="submit">Save</button></div>' +
-        (ad.id ? '<div class="field"><label class="form-label" for="' + id + '-f">Picture (JPG or PNG, up to 2 MB, wide shape works best)</label><input class="form-control" type="file" id="' + id + '-f" accept=".jpg,.jpeg,.png" data-adfile="' + slot + '"></div>' +
+        (ad.id ? '<div class="field"><label class="form-label" for="' + id + '-f">' + (slot >= 4 ? 'Sponsor logo (PNG or JPG, up to 2 MB, about 400 × 160 px, on a white or transparent background)' : 'Picture (JPG or PNG, up to 2 MB, wide shape works best)') + '</label><input class="form-control" type="file" id="' + id + '-f" accept=".jpg,.jpeg,.png" data-adfile="' + slot + '"></div>' +
           (ad.imageUrl ? '<div>' + btn('adImageDel', slot, 'Remove picture') + '</div>' : '') : '<p class="small mute">Save the text first, then add a picture.</p>') : '') + '</form>';
   }
 
@@ -269,9 +271,11 @@
   screens.sponsors = function () {
     return $.when(ST.api('GET', 'admin/sponsors'), ST.api('GET', 'admin/ads')).then(function (a, b) {
       var list = a[0], ads = b[0];
-      return head('Sponsors', 'Sponsors shown on the portal, and the three advertisement places. Switch a name on only after its agreement is signed.') +
+      return head('Sponsors', 'Sponsors shown on the portal, the two top banners and the three advertisement places. Switch a name on only after its agreement is signed.') +
+        panel('Top banners', list.length ? '<div class="adslots">' + [4, 5].map(function (n) { return adSlot(n, ads.filter(function (x) { return x.slot === n; })[0], list); }).join('') + '</div>' : '<div class="body mute">Add a sponsor first.</div>',
+          '<span class="small mute">Two banners side by side at the top of the Web Portal home page</span>') +
         panel('Advertisements', list.length ? '<div class="adslots">' + [1, 2, 3].map(function (n) { return adSlot(n, ads.filter(function (x) { return x.slot === n; })[0], list); }).join('') + '</div>' : '<div class="body mute">Add a sponsor first.</div>',
-          '<span class="small mute">Three places on the Web Portal home page and in the mobile app</span>') +
+          '<span class="small mute">Three places in the Sponsored section of the home page and in the mobile app</span>') +
         (can.content ? '<form class="panel" data-form="sponsor"><header><h3>Add a sponsor</h3></header><div class="body hrow align-items-end">' + field('as-name', 'Name', text('as-name', 'name', '', 'required maxlength="120"'), 'flex:1 1 180px') +
           field('as-role', 'Role', text('as-role', 'role', '', 'required maxlength="120" placeholder="Insurance partner"'), 'flex:1 1 180px') + '<button class="btn btn-danger" type="submit">Add sponsor</button></div></form>' : '') +
         panel('Sponsor names', table(['Sponsor', 'Role', 'Shown on the portal'], list.map(function (x) { return '<tr><td><b>' + e(x.name) + '</b></td><td>' + e(x.role) + '</td><td>' + sw('sponsor', x.id, x.isActive, '', can.content) + '</td></tr>'; })));

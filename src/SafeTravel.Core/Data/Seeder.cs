@@ -52,6 +52,22 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
         }
 
         if (sampleData && !await db.Listings.AnyAsync()) await SampleAsync(staffPassword);
+        await TopBannersAsync();
+    }
+
+    /// <summary>The two banners at the top of the home page (Uber left, Dialog right). Runs on every start, also on the live site,
+    /// but only fills a place that has never been saved, so changes made under Admin Portal, Sponsors are kept.</summary>
+    private async Task TopBannersAsync()
+    {
+        if (await db.Advertisements.AnyAsync(a => a.Slot == Advertisement.TopLeft || a.Slot == Advertisement.TopRight)) return;
+        async Task<Sponsor> Find(string name, string role, int order) =>
+            await db.Sponsors.FirstOrDefaultAsync(s => s.Name == name) ?? db.Sponsors.Add(new Sponsor { Name = name, Role = role, SortOrder = order }).Entity;
+        var uber = await Find("Uber", "Safe Travel partner", 0);
+        var dialog = await Find("Dialog", "Marketing partner", 1);
+        db.Advertisements.AddRange(
+            new Advertisement { Slot = Advertisement.TopLeft, Sponsor = uber, Headline = "Safe rides, day or night", Text = "", LinkLabel = "Book a ride", LinkUrl = "https://www.uber.com/lk/en/" },
+            new Advertisement { Slot = Advertisement.TopRight, Sponsor = dialog, Headline = "Tourist SIM with island-wide coverage", Text = "", LinkLabel = "Get a tourist SIM", LinkUrl = "https://www.dialog.lk/" });
+        await db.SaveChangesAsync();
     }
 
     private async Task Staff(string email, string name, string role, string password)
@@ -179,7 +195,8 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
 
         Sponsor uber = new() { Name = "Uber", Role = "Safe Travel partner", SortOrder = 0 }, dialog = new() { Name = "Dialog", Role = "Marketing partner", SortOrder = 1 };
         db.Sponsors.AddRange(uber, dialog);
-        // Sample advertisements. The third place stays empty until a third sponsor is added in the Admin Portal.
+        // Sample advertisements for the Sponsored section. The third place stays empty until a third sponsor is added in the Admin Portal.
+        // The two top banners are added by TopBannersAsync.
         db.Advertisements.AddRange(
             new Advertisement { Slot = 1, Sponsor = uber, Headline = "Rides with registered drivers", Text = "Sample advertisement. Book a ride with a verified driver, day or night.", LinkLabel = "Book a ride", LinkUrl = "https://www.uber.com/lk/en/" },
             new Advertisement { Slot = 2, Sponsor = dialog, Headline = "Stay connected while you travel", Text = "Sample advertisement. Tourist SIM and roaming packs with island-wide coverage.", LinkLabel = "See tourist plans", LinkUrl = "https://www.dialog.lk/" });

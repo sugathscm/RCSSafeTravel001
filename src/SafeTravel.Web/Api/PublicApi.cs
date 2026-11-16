@@ -76,7 +76,7 @@ public class PublicApi(ContentService content, ListingService listings, AlertSer
     [HttpGet("emergency-numbers"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<NumberDto>> Numbers(CancellationToken ct) => content.NumbersAsync(ct);
 
-    /// <summary>The sponsor advertisements, up to three, in the order they are shown.</summary>
+    /// <summary>The sponsor advertisements in place order. Placement "top" is the two banners at the top of the home page (places 4 and 5), "section" the Sponsored section (places 1 to 3).</summary>
     [HttpGet("ads"), OutputCache(PolicyName = "content")]
     public Task<IReadOnlyList<AdDto>> Ads(CancellationToken ct) => content.AdsAsync(true, ct);
 
