@@ -201,7 +201,7 @@ public class ProductInput
 }
 
 public record AdDto(int Id, int Slot, int SponsorId, string Sponsor, string Headline, string Text, string LinkLabel, string LinkUrl,
-    string? ImageUrl, bool IsActive, int Clicks);
+    string? ImageUrl, bool IsActive, int Clicks, string Placement);
 
 public class AdInput
 {
@@ -263,7 +263,8 @@ public static class Map
 
     public static AdDto ToDto(this Advertisement a) => new(a.Id, a.Slot, a.SponsorId, a.Sponsor?.Name ?? "", a.Headline, a.Text,
         string.IsNullOrWhiteSpace(a.LinkLabel) ? "Learn more" : a.LinkLabel, a.LinkUrl,
-        a.ImagePath is null ? null : $"/api/v1/ads/{a.Id}/image?v={a.UpdatedUtc.Ticks}", a.IsActive, a.Clicks);
+        a.ImagePath is null ? null : $"/api/v1/ads/{a.Id}/image?v={a.UpdatedUtc.Ticks}", a.IsActive, a.Clicks,
+        Advertisement.IsTop(a.Slot) ? "top" : "section");
 
     public static AlertDto ToDto(this Alert a) => new(a.Id, a.Level.ToString().ToLowerInvariant(), a.Type, a.Area, a.Title, a.Source, a.PublishedUtc, a.IsActive, a.Details, a.Latitude, a.Longitude);
 

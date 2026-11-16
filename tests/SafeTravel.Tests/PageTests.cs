@@ -95,9 +95,26 @@ public class AdvertisementTests(TestApp app) : IClassFixture<TestApp>
     public async Task Portal_and_apps_get_the_sponsor_advertisements()
     {
         var ads = await app.CreateClient().GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads");
-        Assert.Equal(2, ads.GetArrayLength());
+        Assert.Equal(4, ads.GetArrayLength());
         Assert.Equal("Uber", ads[0].GetProperty("sponsor").GetString());
+        Assert.Equal("section", ads[0].GetProperty("placement").GetString());
         Assert.Contains("Sponsored", await app.CreateClient().GetStringAsync("/"));
+    }
+
+    [Fact]
+    public async Task Home_page_shows_two_top_banners_uber_left_and_dialog_right()
+    {
+        var ads = (await app.CreateClient().GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads")).EnumerateArray()
+            .Where(a => a.GetProperty("placement").GetString() == "top").ToList();
+        Assert.Equal(new[] { 4, 5 }, ads.Select(a => a.GetProperty("slot").GetInt32()).ToArray());
+        Assert.Equal(new[] { "Uber", "Dialog" }, ads.Select(a => a.GetProperty("sponsor").GetString() ?? "").ToArray());
+
+        var html = await app.CreateClient().GetStringAsync("/");
+        Assert.Contains("class=\"topads\"", html);
+        Assert.Contains("src=\"/img/sponsors/uber.png\"", html);
+        Assert.Contains("src=\"/img/sponsors/dialog.png\"", html);
+        Assert.True(html.IndexOf("topad-4", StringComparison.Ordinal) < html.IndexOf("topad-5", StringComparison.Ordinal));
+        Assert.True(html.IndexOf("topad-5", StringComparison.Ordinal) < html.IndexOf("hbadge", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -107,19 +124,19 @@ public class AdvertisementTests(TestApp app) : IClassFixture<TestApp>
         var sponsor = await admin.PostAsJsonAsync("/api/v1/admin/sponsors", new { name = "Third Sponsor", role = "Insurance partner" }).ReadAsync();
         var body = new { sponsorId = sponsor.GetProperty("id").GetInt32(), headline = "Travel cover in minutes", text = "Sample", linkLabel = "Get cover", linkUrl = "https://example.com/cover", isActive = true };
 
-        Assert.Equal(HttpStatusCode.NotFound, (await admin.PutAsJsonAsync("/api/v1/admin/ads/4", body)).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await admin.PutAsJsonAsync("/api/v1/admin/ads/6", body)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await admin.PutAsJsonAsync("/api/v1/admin/ads/3", body with { linkUrl = "javascript:alert(1)" })).StatusCode);
 
         var ad = await admin.PutAsJsonAsync("/api/v1/admin/ads/3", body).ReadAsync();
         var open = app.CreateClient();
-        Assert.Equal(3, (await open.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads")).GetArrayLength());
+        Assert.Equal(5, (await open.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads")).GetArrayLength());
 
         (await open.PostAsync($"/api/v1/ads/{ad.GetProperty("id").GetInt32()}/click", null)).EnsureSuccessStatusCode();
         var all = await admin.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/admin/ads");
         Assert.Equal(1, all.EnumerateArray().Single(a => a.GetProperty("slot").GetInt32() == 3).GetProperty("clicks").GetInt32());
 
         (await admin.PutAsJsonAsync("/api/v1/admin/ads/3", body with { isActive = false })).EnsureSuccessStatusCode();
-        Assert.Equal(2, (await open.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads")).GetArrayLength());
+        Assert.Equal(4, (await open.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/v1/ads")).GetArrayLength());
     }
 
     [Fact]
