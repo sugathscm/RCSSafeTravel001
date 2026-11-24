@@ -55,19 +55,23 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
         await TopBannersAsync();
     }
 
-    /// <summary>The two banners at the top of the home page (Uber left, Dialog right). Runs on every start, also on the live site,
-    /// but only fills a place that has never been saved, so changes made under Admin Portal, Sponsors are kept.</summary>
+    /// <summary>The three banners at the top of the home page (Uber left, Dialog middle, Softlogic Life right). Runs on every start,
+    /// also on the live site, but only fills a place that has never been saved, so changes made under Admin Portal, Sponsors are kept.</summary>
     private async Task TopBannersAsync()
     {
-        if (await db.Advertisements.AnyAsync(a => a.Slot == Advertisement.TopLeft || a.Slot == Advertisement.TopRight)) return;
-        async Task<Sponsor> Find(string name, string role, int order) =>
-            await db.Sponsors.FirstOrDefaultAsync(s => s.Name == name) ?? db.Sponsors.Add(new Sponsor { Name = name, Role = role, SortOrder = order }).Entity;
-        var uber = await Find("Uber", "Safe Travel partner", 0);
-        var dialog = await Find("Dialog", "Marketing partner", 1);
-        db.Advertisements.AddRange(
-            new Advertisement { Slot = Advertisement.TopLeft, Sponsor = uber, Headline = "Safe rides, day or night", Text = "", LinkLabel = "Book a ride", LinkUrl = "https://www.uber.com/lk/en/" },
-            new Advertisement { Slot = Advertisement.TopRight, Sponsor = dialog, Headline = "Tourist SIM with island-wide coverage", Text = "", LinkLabel = "Get a tourist SIM", LinkUrl = "https://www.dialog.lk/" });
-        await db.SaveChangesAsync();
+        (int Slot, string Sponsor, string Role, string Headline, string LinkLabel, string LinkUrl)[] banners = [
+            (4, "Uber", "Safe Travel partner", "Safe rides, day or night", "Book a ride", "https://www.uber.com/lk/en/"),
+            (5, "Dialog", "Marketing partner", "Tourist SIM with island-wide coverage", "Get a tourist SIM", "https://www.dialog.lk/"),
+            (6, "Softlogic Life", "Insurance partner", "Travel with peace of mind", "Learn more", "https://www.softlogiclife.lk/")];
+        var saved = await db.Advertisements.Where(a => a.Slot >= Advertisement.TopFirst && a.Slot <= Advertisement.TopLast).Select(a => a.Slot).ToListAsync();
+        var order = await db.Sponsors.CountAsync();
+        foreach (var b in banners.Where(b => !saved.Contains(b.Slot)))
+        {
+            var sponsor = await db.Sponsors.FirstOrDefaultAsync(s => s.Name == b.Sponsor)
+                          ?? db.Sponsors.Add(new Sponsor { Name = b.Sponsor, Role = b.Role, SortOrder = order++ }).Entity;
+            db.Advertisements.Add(new Advertisement { Slot = b.Slot, Sponsor = sponsor, Headline = b.Headline, Text = "", LinkLabel = b.LinkLabel, LinkUrl = b.LinkUrl });
+            await db.SaveChangesAsync();
+        }
     }
 
     private async Task Staff(string email, string name, string role, string password)
@@ -196,7 +200,7 @@ public class Seeder(AppDbContext db, UserManager<AppUser> users, RoleManager<Ide
         Sponsor uber = new() { Name = "Uber", Role = "Safe Travel partner", SortOrder = 0 }, dialog = new() { Name = "Dialog", Role = "Marketing partner", SortOrder = 1 };
         db.Sponsors.AddRange(uber, dialog);
         // Sample advertisements for the Sponsored section. The third place stays empty until a third sponsor is added in the Admin Portal.
-        // The two top banners are added by TopBannersAsync.
+        // The three top banners are added by TopBannersAsync.
         db.Advertisements.AddRange(
             new Advertisement { Slot = 1, Sponsor = uber, Headline = "Rides with registered drivers", Text = "Sample advertisement. Book a ride with a verified driver, day or night.", LinkLabel = "Book a ride", LinkUrl = "https://www.uber.com/lk/en/" },
             new Advertisement { Slot = 2, Sponsor = dialog, Headline = "Stay connected while you travel", Text = "Sample advertisement. Tourist SIM and roaming packs with island-wide coverage.", LinkLabel = "See tourist plans", LinkUrl = "https://www.dialog.lk/" });

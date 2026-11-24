@@ -246,19 +246,19 @@ a.big:hover{transform:translateY(-3px);color:var(--ink)}
 .hero.has-topads{flex-direction:column;align-items:stretch}
 .hero .wrap.topads-wrap{display:block;padding-block:20px 0}
 .hero.has-topads>.wrap:last-child{margin-top:auto;padding-top:40px}
-.topads{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.topads{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .topad{position:relative;display:flex;align-items:center;gap:14px;min-height:88px;padding:14px 16px;border-radius:20px;overflow:hidden;text-decoration:none;color:#fff;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.28);transition:transform .15s,background-color .15s}
 .topad:hover{color:#fff;background-color:rgba(255,255,255,.22);transform:translateY(-2px)}
 .topad:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .topad-mark{flex:0 0 52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-size:24px;font-weight:800;background:#fff;color:#111}
 .topad-5 .topad-mark{background:var(--t-teal);color:var(--ink)}
 .topad-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
-.topad-by{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)}
-.topad b{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.topad-go{flex:0 0 auto;padding:8px 14px;border-radius:999px;background:#fff;color:#111;font-weight:700;font-size:13px;white-space:nowrap}
+.topad-by{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topad b{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.01em;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.topad-go{font-weight:700;font-size:13px;color:#fff;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topad-logo{flex:0 0 auto;min-width:56px;max-width:130px;height:56px;padding:6px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center}
 .topad-logo img{height:100%;width:auto;max-width:118px;object-fit:contain;display:block;border-radius:8px}
-@media (max-width:560px){.topad{min-height:72px}.topad-logo{min-width:46px;height:46px;padding:5px}.topad-mark{flex-basis:44px;height:44px;font-size:20px}.topad b{font-size:16px;white-space:normal}.topad-go{display:none}}
+@media (max-width:560px){.topad{min-height:72px}.topad-logo{min-width:46px;height:46px;padding:5px}.topad-mark{flex-basis:44px;height:44px;font-size:20px}.topad b{font-size:16px}}
 .adsec{padding-block:56px 0}
 .ads{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:12px}
 .ad{display:flex;flex-direction:column;border-radius:26px;overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .15s}

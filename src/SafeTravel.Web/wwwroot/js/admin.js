@@ -228,8 +228,8 @@
     });
   };
 
-  // Places 1 to 3 are the Sponsored section of the home page, 4 and 5 the two banners at the top of it.
-  function adPlace(slot) { return slot === 4 ? 'Top banner, left' : slot === 5 ? 'Top banner, right' : 'Place ' + slot; }
+  // Places 1 to 3 are the Sponsored section of the home page, 4 to 6 the three banners at the top of it.
+  function adPlace(slot) { return { 4: 'Top banner 1, left', 5: 'Top banner 2, middle', 6: 'Top banner 3, right' }[slot] || 'Place ' + slot; }
   function adSlot(slot, ad, sponsors) {
     ad = ad || { sponsorId: 0, headline: '', text: '', linkLabel: '', linkUrl: '', isActive: true, clicks: 0 };
     var id = 'ad' + slot, ro = can.content ? '' : ' disabled';
@@ -271,9 +271,9 @@
   screens.sponsors = function () {
     return $.when(ST.api('GET', 'admin/sponsors'), ST.api('GET', 'admin/ads')).then(function (a, b) {
       var list = a[0], ads = b[0];
-      return head('Sponsors', 'Sponsors shown on the portal, the two top banners and the three advertisement places. Switch a name on only after its agreement is signed.') +
-        panel('Top banners', list.length ? '<div class="adslots">' + [4, 5].map(function (n) { return adSlot(n, ads.filter(function (x) { return x.slot === n; })[0], list); }).join('') + '</div>' : '<div class="body mute">Add a sponsor first.</div>',
-          '<span class="small mute">Two banners side by side at the top of the Web Portal home page</span>') +
+      return head('Sponsors', 'Sponsors shown on the portal, the three top banners and the three advertisement places. Switch a name on only after its agreement is signed.') +
+        panel('Top banners', list.length ? '<div class="adslots">' + [4, 5, 6].map(function (n) { return adSlot(n, ads.filter(function (x) { return x.slot === n; })[0], list); }).join('') + '</div>' : '<div class="body mute">Add a sponsor first.</div>',
+          '<span class="small mute">Three banners side by side at the top of the Web Portal home page</span>') +
         panel('Advertisements', list.length ? '<div class="adslots">' + [1, 2, 3].map(function (n) { return adSlot(n, ads.filter(function (x) { return x.slot === n; })[0], list); }).join('') + '</div>' : '<div class="body mute">Add a sponsor first.</div>',
           '<span class="small mute">Three places in the Sponsored section of the home page and in the mobile app</span>') +
         (can.content ? '<form class="panel" data-form="sponsor"><header><h3>Add a sponsor</h3></header><div class="body hrow align-items-end">' + field('as-name', 'Name', text('as-name', 'name', '', 'required maxlength="120"'), 'flex:1 1 180px') +

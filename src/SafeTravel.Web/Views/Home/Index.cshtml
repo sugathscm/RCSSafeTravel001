@@ -5,7 +5,7 @@
     var c = Model.Content;
     bool On(string s) => !c.Sections.TryGetValue(s, out var v) || v;
     string Dot(string level) => level == "red" ? "" : level;
-    // Places 4 and 5 are the two banners at the top of the page; places 1 to 3 the Sponsored section further down.
+    // Places 4 to 6 are the three banners at the top of the page; places 1 to 3 the Sponsored section further down.
     var topAds = On("topads") ? Model.Ads.Where(a => a.Placement == "top").ToList() : new();
     var sectionAds = Model.Ads.Where(a => a.Placement != "top").ToList();
     // Logo of a top banner: the picture uploaded in the Admin Portal, otherwise a stock file wwwroot/img/sponsors/<name>.png (uber.png, dialog.png).
@@ -36,8 +36,7 @@
                         {
                             <span class="topad-mark" aria-hidden="true">@(ad.Sponsor.Length > 0 ? ad.Sponsor[..1] : "★")</span>
                         }
-                        <span class="topad-body"><span class="topad-by">@T["Sponsored"] · @ad.Sponsor</span><b>@ad.Headline</b></span>
-                        <span class="topad-go">@ad.LinkLabel →</span>
+                        <span class="topad-body"><span class="topad-by">@T["Sponsored"] · @ad.Sponsor</span><b>@ad.Headline</b><span class="topad-go">@ad.LinkLabel →</span></span>
                     </a>
                 }
             </div>
