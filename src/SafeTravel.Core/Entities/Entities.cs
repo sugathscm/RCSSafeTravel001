@@ -207,13 +207,21 @@ public class Sponsor
     public int SortOrder { get; set; }
 }
 
-/// <summary>One of the three advertisement places on the Web Portal and in the apps. Each belongs to a sponsor.</summary>
+/// <summary>One of the advertisement places on the Web Portal and in the apps. Each belongs to a sponsor.
+/// Places 1 to 3 are the "Sponsored" section of the home page. Places 4, 5 and 6 are the three banners side by side
+/// at the top of the home page, from left to right.</summary>
 public class Advertisement
 {
-    public const int Slots = 3;
+    public const int Slots = 6;
+    /// <summary>The places in the "Sponsored" section.</summary>
+    public const int SectionSlots = 3;
+    /// <summary>The first and last of the top banner places (4 left, 5 middle, 6 right).</summary>
+    public const int TopFirst = 4, TopLast = 6;
+
+    public static bool IsTop(int slot) => slot is >= TopFirst and <= TopLast;
 
     public int Id { get; set; }
-    /// <summary>1, 2 or 3: the position on the page.</summary>
+    /// <summary>1 to 5: the place on the page (see above).</summary>
     public int Slot { get; set; }
     public int SponsorId { get; set; }
     public Sponsor? Sponsor { get; set; }
@@ -278,7 +286,7 @@ public static class SettingKeys
     public const string HeroText = "hero.text";
     public const string AnnualFee = "supplier.annualFee";
     public const string SectionPrefix = "section.";
-    public static readonly string[] Sections = ["alerts", "ads", "map", "businesses", "topics", "donate", "sponsors"];
+    public static readonly string[] Sections = ["topads", "alerts", "ads", "map", "businesses", "topics", "donate", "sponsors"];
 }
 
 public class AuditEntry

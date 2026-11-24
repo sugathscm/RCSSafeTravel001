@@ -1,13 +1,47 @@
 @model PortalHome
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
 @{
     Layout = "_Portal"; ViewData["Page"] = "home";
     var c = Model.Content;
     bool On(string s) => !c.Sections.TryGetValue(s, out var v) || v;
     string Dot(string level) => level == "red" ? "" : level;
+    // Places 4 to 6 are the three banners at the top of the page; places 1 to 3 the Sponsored section further down.
+    var topAds = On("topads") ? Model.Ads.Where(a => a.Placement == "top").ToList() : new();
+    var sectionAds = Model.Ads.Where(a => a.Placement != "top").ToList();
+    // Logo of a top banner: the picture uploaded in the Admin Portal, otherwise a stock file wwwroot/img/sponsors/<name>.png (uber.png, dialog.png).
+    string? SponsorLogo(string sponsor)
+    {
+        var name = new string(sponsor.ToLowerInvariant().Where(char.IsLetterOrDigit).ToArray());
+        var file = $"img/sponsors/{name}.png";
+        return name.Length > 0 && Env.WebRootFileProvider.GetFileInfo(file).Exists ? "/" + file : null;
+    }
 }
 @section styles { <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css"> }
 
-<section class="hero">
+<section class="hero@(topAds.Count > 0 ? " has-topads" : "")">
+    @if (topAds.Count > 0)
+    {
+        <div class="wrap topads-wrap">
+            <div class="topads" aria-label="Sponsor advertisements">
+                @foreach (var ad in topAds)
+                {
+                    var logo = ad.ImageUrl ?? SponsorLogo(ad.Sponsor);
+                    <a class="topad topad-@ad.Slot" href="@ad.LinkUrl" target="_blank" rel="sponsored noopener" data-ad="@ad.Id">
+                        @* The picture of a top banner is the sponsor's logo. Without one, the first letter of the name stands in. *@
+                        @if (logo is not null)
+                        {
+                            <span class="topad-logo"><img src="@logo" alt="@ad.Sponsor logo"></span>
+                        }
+                        else
+                        {
+                            <span class="topad-mark" aria-hidden="true">@(ad.Sponsor.Length > 0 ? ad.Sponsor[..1] : "★")</span>
+                        }
+                        <span class="topad-body"><span class="topad-by">@T["Sponsored"] · @ad.Sponsor</span><b>@ad.Headline</b><span class="topad-go">@ad.LinkLabel →</span></span>
+                    </a>
+                }
+            </div>
+        </div>
+    }
     <div class="wrap">
         <div class="hmain">
             <span class="hbadge"><span class="logo-dot"><img src="~/img/slrcs-logo.png" alt="" data-logo></span><span>@T["Official travel-safety service of the Red Cross"]</span></span>
@@ -36,13 +70,13 @@
 </section>
 <div class="srcs"><div class="wrap"><span class="eyebrow mute">@T["Alerts & data from"]</span><span>Disaster Management Centre</span><span>NBRO</span><span>Dept. of Meteorology</span><span>Ministry of Health</span></div></div>
 
-@if (On("ads") && Model.Ads.Count > 0)
+@if (On("ads") && sectionAds.Count > 0)
 {
     <section class="sec adsec" aria-label="Sponsor advertisements">
         <div class="wrap">
             <span class="eyebrow mute">@T["Sponsored"]</span>
             <div class="ads">
-                @foreach (var ad in Model.Ads)
+                @foreach (var ad in sectionAds)
                 {
                     <a class="ad ad-@ad.Slot" href="@ad.LinkUrl" target="_blank" rel="sponsored noopener" data-ad="@ad.Id">
                         @if (ad.ImageUrl is not null) { <img src="@ad.ImageUrl" alt="" loading="lazy"> }

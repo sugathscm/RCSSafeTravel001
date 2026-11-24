@@ -133,7 +133,7 @@ public class ContentService(AppDbContext db, SettingsService settings, AuditServ
         await db.SaveChangesAsync(ct);
     }
 
-    // ----- advertisements: three places, one per sponsor -----
+    // ----- advertisements: three places in the Sponsored section and two top banners (see Advertisement) -----
 
     /// <summary>Advertisements in slot order. The public list leaves out switched-off ones and those of a switched-off sponsor.</summary>
     public async Task<IReadOnlyList<AdDto>> AdsAsync(bool publicOnly, CancellationToken ct = default)
